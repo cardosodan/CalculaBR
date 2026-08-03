@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Calculadora de Rescisão Trabalhista — CalculaBR{% endblock %}
+{% block meta_description %}Calcule saldo de salário, aviso prévio, férias, 13º proporcional e FGTS + multa nos 4 tipos de rescisão trabalhista: sem justa causa, pedido de demissão, justa causa e acordo mútuo.{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Trabalhista</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">Calculadora de Rescisão Trabalhista</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    Verbas rescisórias completas nos 4 tipos de desligamento — cada um paga
+    (e deixa de pagar) coisas diferentes por lei.
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <!-- Formulário -->
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="tipo">Tipo de rescisão</label>
+        <select id="tipo" class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+          <option value="sem_justa_causa">Sem justa causa (demissão pelo empregador)</option>
+          <option value="pedido_demissao">Pedido de demissão</option>
+          <option value="justa_causa">Justa causa</option>
+          <option value="acordo_mutuo">Acordo mútuo (distrato, Art. 484-A)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="admissao">Data de admissão</label>
+        <input id="admissao" type="date" class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="desligamento">Último dia de trabalho</label>
+        <input id="desligamento" type="date" class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="salario">Salário bruto mensal</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="salario" type="text" inputmode="decimal" placeholder="3.000,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+
+      <div id="campo-aviso">
+        <label class="block text-sm font-medium text-ink-muted mb-1.5">Aviso prévio</label>
+        <div class="flex gap-2">
+          <label class="flex-1 flex items-center justify-center gap-1.5 text-sm rounded-lg border border-border px-3 py-2 cursor-pointer has-[:checked]:bg-elevated has-[:checked]:border-accent has-[:checked]:text-accent text-ink-muted">
+            <input type="radio" name="aviso-tipo" value="indenizado" checked class="accent-accent">
+            Indenizado
+          </label>
+          <label class="flex-1 flex items-center justify-center gap-1.5 text-sm rounded-lg border border-border px-3 py-2 cursor-pointer has-[:checked]:bg-elevated has-[:checked]:border-accent has-[:checked]:text-accent text-ink-muted">
+            <input type="radio" name="aviso-tipo" value="trabalhado" class="accent-accent">
+            Trabalhado
+          </label>
+        </div>
+      </div>
+
+      <label class="flex items-start gap-2.5 text-sm text-ink-muted cursor-pointer">
+        <input id="tem-vencidas" type="checkbox" class="mt-0.5 accent-accent w-4 h-4 rounded">
+        Já tenho um período de férias vencido (12 meses sem tirar)
+      </label>
+
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="fgts-saldo">Saldo do FGTS depositado (opcional)</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="fgts-saldo" type="text" inputmode="decimal" placeholder="deixe em branco pra estimar"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+        <p class="mt-1.5 text-xs text-ink-faint">Sem informar, estimamos 8% do salário por mês de contrato — confirme no app FGTS/extrato real se puder.</p>
+      </div>
+
+      <button id="btn-calcular" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Calcular
+      </button>
+    </div>
+
+    <!-- Resultado -->
+    <div class="lg:col-span-3">
+      <div id="resultado" class="hidden bg-surface border border-accent/30 rounded-2xl p-6">
+        <p class="text-sm text-ink-muted">Total líquido estimado a receber</p>
+        <p id="r-total" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+        <p id="r-data-projetada" class="hidden mt-2 text-xs text-ink-faint"></p>
+
+        <div class="mt-6 border-t border-border pt-5">
+          <table class="w-full text-sm">
+            <tbody id="r-tabela-verbas" class="divide-y divide-border font-numeros">
+              <!-- preenchido via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="r-notas" class="mt-5 space-y-2 text-xs text-ink-faint"></div>
+      </div>
+
+      <div id="placeholder-resultado" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[240px]">
+        Preencha os dados e clique em calcular.
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-8 text-xs text-ink-faint max-w-2xl">
+    Valores de verbas indenizatórias (aviso indenizado, férias + 1/3, multa
+    do FGTS) são isentos de IR. Saldo de salário e 13º proporcional têm
+    desconto de INSS/IRRF não incluído aqui — use a <a href="/inss.html" class="underline hover:text-accent">calculadora de INSS</a> pra estimar o desconto sobre essas duas verbas.
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/rescisao.js"></script>
+{% endblock %}

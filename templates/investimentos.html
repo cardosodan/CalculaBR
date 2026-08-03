@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Calculadoras de Investimento (CDB, CDI, Selic, Poupança) — CalculaBR{% endblock %}
+{% block meta_description %}Compare CDB, LCI/LCA, Tesouro Selic e Poupança com IR regressivo real, e simule juros compostos com aportes mensais.{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Investimentos</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">Comparador de Renda Fixa</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    CDB, LCI/LCA, Tesouro Selic e Poupança lado a lado, já líquidos de IR
+    (cada um com sua própria regra).
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="valor-aplicado">Valor aplicado</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="valor-aplicado" type="text" inputmode="decimal" placeholder="10.000,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="prazo-dias">Prazo (dias corridos)</label>
+        <input id="prazo-dias" type="text" inputmode="numeric" placeholder="360"
+               class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="percentual-cdb">% do CDI do seu CDB</label>
+        <div class="relative">
+          <input id="percentual-cdb" type="text" inputmode="decimal" value="110"
+                 class="w-full bg-elevated border border-border rounded-lg pl-3 pr-9 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">%</span>
+        </div>
+      </div>
+
+      <details class="group">
+        <summary class="text-sm text-ink-muted cursor-pointer select-none flex items-center gap-1.5">
+          <i data-lucide="chevron-right" class="w-4 h-4 group-open:rotate-90 transition-transform"></i>
+          Taxas de referência (editável)
+        </summary>
+        <div class="mt-3 space-y-3 pl-1">
+          <div>
+            <label class="block text-xs text-ink-faint mb-1" for="cdi-anual">CDI ao ano</label>
+            <div class="relative">
+              <input id="cdi-anual" type="text" inputmode="decimal" value="14,15" class="w-full bg-elevated border border-border rounded-lg pl-3 pr-8 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint text-xs">%</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-ink-faint mb-1" for="selic-anual">Selic ao ano</label>
+            <div class="relative">
+              <input id="selic-anual" type="text" inputmode="decimal" value="14,25" class="w-full bg-elevated border border-border rounded-lg pl-3 pr-8 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint text-xs">%</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-ink-faint mb-1" for="tr-mensal">TR ao mês</label>
+            <div class="relative">
+              <input id="tr-mensal" type="text" inputmode="decimal" value="0,17" class="w-full bg-elevated border border-border rounded-lg pl-3 pr-8 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint text-xs">%</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-ink-faint mb-1" for="percentual-lci">% do CDI da LCI/LCA</label>
+            <div class="relative">
+              <input id="percentual-lci" type="text" inputmode="decimal" value="90" class="w-full bg-elevated border border-border rounded-lg pl-3 pr-8 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint text-xs">%</span>
+            </div>
+          </div>
+          <p class="text-xs text-ink-faint">Valores de referência checados nesta revisão — CDI/Selic mudam a cada reunião do Copom, ajuste se necessário.</p>
+        </div>
+      </details>
+
+      <button id="btn-comparar" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Comparar
+      </button>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div id="resultado-comparador" class="hidden space-y-3"></div>
+      <div id="placeholder-comparador" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[240px]">
+        Preencha os dados e clique em comparar.
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-6 text-xs text-ink-faint max-w-2xl">
+    IR regressivo (renda fixa tributada): 22,5% até 180 dias, 20% de 181 a
+    360, 17,5% de 361 a 720, 15% acima de 720 dias. Poupança e LCI/LCA são
+    isentas de IR para pessoa física. Resgates de CDB/Tesouro antes de 30
+    dias também têm IOF regressivo, não incluído aqui. Tesouro Selic tem
+    taxa de custódia da B3 (0,20% a.a. acima de R$ 10 mil), também não
+    incluída.
+  </p>
+
+  <!-- Juros compostos -->
+  <div class="mt-16">
+    <h2 class="font-display text-2xl font-semibold text-ink">Simulador de Juros Compostos</h2>
+    <p class="mt-2 text-ink-muted max-w-2xl">Quanto um valor inicial + aportes mensais viram lá na frente.</p>
+
+    <div class="grid lg:grid-cols-5 gap-6 mt-6">
+      <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-ink-muted mb-1.5" for="jc-inicial">Valor inicial</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+            <input id="jc-inicial" type="text" inputmode="decimal" placeholder="1.000,00" class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink-muted mb-1.5" for="jc-aporte">Aporte mensal</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+            <input id="jc-aporte" type="text" inputmode="decimal" placeholder="500,00" class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink-muted mb-1.5" for="jc-taxa">Rentabilidade esperada ao ano</label>
+          <div class="relative">
+            <input id="jc-taxa" type="text" inputmode="decimal" placeholder="12" class="w-full bg-elevated border border-border rounded-lg pl-3 pr-9 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">%</span>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-ink-muted mb-1.5" for="jc-meses">Prazo (meses)</label>
+          <input id="jc-meses" type="text" inputmode="numeric" placeholder="120" class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+        <button id="btn-simular-jc" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+          Simular
+        </button>
+      </div>
+
+      <div class="lg:col-span-3">
+        <div id="resultado-jc" class="hidden bg-surface border border-accent/30 rounded-2xl p-6">
+          <p class="text-sm text-ink-muted">Montante final</p>
+          <p id="jc-r-montante" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+          <div class="grid sm:grid-cols-2 gap-4 mt-6">
+            <div class="bg-elevated rounded-xl p-4">
+              <p class="text-xs text-ink-muted">Total investido (do seu bolso)</p>
+              <p id="jc-r-investido" class="font-numeros text-xl font-semibold text-ink mt-1">—</p>
+            </div>
+            <div class="bg-elevated rounded-xl p-4">
+              <p class="text-xs text-ink-muted">Total em juros</p>
+              <p id="jc-r-juros" class="font-numeros text-xl font-semibold text-good mt-1">—</p>
+            </div>
+          </div>
+        </div>
+        <div id="placeholder-jc" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[160px]">
+          Preencha os dados e clique em simular.
+        </div>
+      </div>
+    </div>
+    <p class="mt-6 text-xs text-ink-faint max-w-2xl">
+      Simulação bruta, sem descontar IR — útil pra planejar patrimônio a
+      longo prazo, não pra prever um investimento específico. Aportes
+      considerados no fim de cada mês.
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/investimentos.js"></script>
+{% endblock %}

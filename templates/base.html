@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CalculaBR — Calculadoras trabalhistas, tributárias e de investimento{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Calculadoras gratuitas de rescisão trabalhista, férias, INSS, ITBI e investimentos (CDB, CDI, Selic) com as tabelas e alíquotas vigentes no Brasil.{% endblock %}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/tailwind.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-base text-ink min-h-screen flex flex-col">
+
+  <header class="border-b border-border bg-surface/80 backdrop-blur sticky top-0 z-40">
+    <nav class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between" x-data="{ menuAberto: false }">
+      <a href="/index.html" class="font-display font-semibold text-lg text-ink flex items-center gap-2">
+        <span class="text-accent">Calcula</span>BR
+      </a>
+
+      <div class="hidden md:flex items-center gap-1">
+        {% for item in nav_items %}
+          <a href="/{{ item.href }}"
+             class="px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                    {% if item.slug == active %}bg-elevated text-accent{% else %}text-ink-muted hover:text-ink hover:bg-elevated{% endif %}">
+            {{ item.label }}
+          </a>
+        {% endfor %}
+      </div>
+
+      <button @click="menuAberto = !menuAberto" class="md:hidden text-ink-muted hover:text-ink" aria-label="Abrir menu">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+
+      <div x-show="menuAberto" @click.outside="menuAberto = false" x-transition
+           class="md:hidden absolute top-16 left-0 right-0 bg-surface border-b border-border px-4 py-3 flex flex-col gap-1" style="display: none;">
+        {% for item in nav_items %}
+          <a href="/{{ item.href }}"
+             class="px-3 py-2.5 rounded-lg text-sm font-medium {% if item.slug == active %}bg-elevated text-accent{% else %}text-ink-muted{% endif %}">
+            {{ item.label }}
+          </a>
+        {% endfor %}
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="border-t border-border bg-surface mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid gap-8 sm:grid-cols-2">
+      <div>
+        <p class="font-display font-semibold text-ink"><span class="text-accent">Calcula</span>BR</p>
+        <p class="mt-2 text-sm text-ink-muted max-w-sm">
+          Calculadoras com as regras e tabelas vigentes no Brasil — trabalhista,
+          tributária e de investimentos, numa tela só.
+        </p>
+      </div>
+      <div class="sm:text-right text-sm text-ink-faint">
+        <p>Resultados são estimativas educacionais, não substituem orientação
+          contábil, jurídica ou financeira profissional.</p>
+        <p class="mt-2">© {{ ano_atual }} CalculaBR.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

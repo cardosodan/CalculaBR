@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Calculadora de ITBI — CalculaBR{% endblock %}
+{% block meta_description %}Calcule o ITBI (Imposto de Transmissão de Bens Imóveis) na compra de um imóvel — alíquota de Manaus pré-configurada, ou informe a da sua cidade.{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Tributário</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">Calculadora de ITBI</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    O Imposto de Transmissão de Bens Imóveis é municipal — a alíquota varia
+    de cidade pra cidade. Manaus já vem configurada; pra outra cidade,
+    informe a alíquota da sua prefeitura.
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="valor-imovel">Valor do imóvel (venal ou de transação, o maior)</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="valor-imovel" type="text" inputmode="decimal" placeholder="350.000,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="cidade">Cidade</label>
+        <select id="cidade" class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+          <option value="2">Manaus (AM) — 2%</option>
+          <option value="custom">Outra cidade (informar alíquota)</option>
+        </select>
+      </div>
+
+      <div id="campo-aliquota-custom" class="hidden">
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="aliquota-custom">Alíquota da sua cidade</label>
+        <div class="relative">
+          <input id="aliquota-custom" type="text" inputmode="decimal" placeholder="3"
+                 class="w-full bg-elevated border border-border rounded-lg pl-3 pr-9 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">%</span>
+        </div>
+        <p class="mt-1.5 text-xs text-ink-faint">Consulte na prefeitura ou no carnê de IPTU — costuma variar entre 2% e 3%.</p>
+      </div>
+
+      <button id="btn-calcular" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Calcular
+      </button>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div id="resultado" class="hidden bg-surface border border-accent/30 rounded-2xl p-6">
+        <p class="text-sm text-ink-muted">Valor do ITBI</p>
+        <p id="r-itbi" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+
+        <div class="grid sm:grid-cols-2 gap-4 mt-6">
+          <div class="bg-elevated rounded-xl p-4">
+            <p class="text-xs text-ink-muted">Alíquota aplicada</p>
+            <p id="r-aliquota" class="font-numeros text-xl font-semibold text-ink mt-1">—</p>
+          </div>
+          <div class="bg-elevated rounded-xl p-4">
+            <p class="text-xs text-ink-muted">Valor do imóvel + ITBI</p>
+            <p id="r-total-com-itbi" class="font-numeros text-xl font-semibold text-ink mt-1">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="placeholder-resultado" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[160px]">
+        Preencha o valor do imóvel e clique em calcular.
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-8 text-xs text-ink-faint max-w-2xl">
+    Alíquota de Manaus (2%) verificada nesta revisão, mas leis municipais
+    mudam — confirme o valor vigente com a SEMEF/Prefeitura de Manaus antes
+    de fechar negócio. Este cálculo não considera isenções (ex: primeiro
+    imóvel financiado pelo SFH, quando previstas em lei municipal).
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/itbi.js"></script>
+{% endblock %}

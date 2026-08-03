@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Calculadora de INSS 2026 — CalculaBR{% endblock %}
+{% block meta_description %}Calcule o desconto de INSS sobre o salário com a tabela progressiva vigente em 2026 (alíquotas de 7,5% a 14%, teto de R$ 8.475,55).{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Trabalhista</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">Calculadora de INSS</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    Desconto mensal do INSS sobre o salário de carteira assinada, usando a
+    tabela progressiva vigente a partir de janeiro de 2026.
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <!-- Formulário -->
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit">
+      <label class="block text-sm font-medium text-ink-muted mb-1.5" for="salario">Salário bruto mensal</label>
+      <div class="relative">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+        <input id="salario" type="text" inputmode="decimal" placeholder="3.000,00"
+               class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+
+      <button id="btn-calcular" class="mt-5 w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Calcular
+      </button>
+
+      <p class="mt-4 text-xs text-ink-faint">
+        Considera apenas o desconto de INSS. Não inclui IRRF nem outros
+        descontos (vale-transporte, plano de saúde etc.).
+      </p>
+    </div>
+
+    <!-- Resultado -->
+    <div class="lg:col-span-3">
+      <div id="resultado" class="hidden bg-surface border border-accent/30 rounded-2xl p-6">
+        <p class="text-sm text-ink-muted">Desconto de INSS</p>
+        <p id="r-desconto" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+
+        <div class="grid sm:grid-cols-2 gap-4 mt-6">
+          <div class="bg-elevated rounded-xl p-4">
+            <p class="text-xs text-ink-muted">Salário líquido (após INSS)</p>
+            <p id="r-liquido" class="font-numeros text-xl font-semibold text-ink mt-1">—</p>
+          </div>
+          <div class="bg-elevated rounded-xl p-4">
+            <p class="text-xs text-ink-muted">Alíquota efetiva</p>
+            <p id="r-aliquota-efetiva" class="font-numeros text-xl font-semibold text-ink mt-1">—</p>
+          </div>
+        </div>
+
+        <p id="r-teto-aviso" class="hidden mt-4 text-xs text-ink-faint bg-elevated rounded-lg px-3 py-2">
+          Salário acima do teto do INSS — o desconto foi calculado sobre o
+          teto (R$ 8.475,55), não sobre o valor integral.
+        </p>
+      </div>
+
+      <div id="placeholder-resultado" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[160px]">
+        Preencha o salário e clique em calcular.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela vigente -->
+  <div class="mt-12">
+    <h2 class="font-display text-xl font-semibold text-ink mb-4">Tabela do INSS vigente (a partir de jan/2026)</h2>
+    <div class="bg-surface border border-border rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-border text-left text-ink-muted">
+              <th class="px-5 py-3 font-medium">Salário de contribuição</th>
+              <th class="px-5 py-3 font-medium">Alíquota</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border font-numeros text-ink">
+            <tr><td class="px-5 py-3">até R$ 1.621,00</td><td class="px-5 py-3">7,5%</td></tr>
+            <tr><td class="px-5 py-3">de R$ 1.621,01 até R$ 2.902,84</td><td class="px-5 py-3">9%</td></tr>
+            <tr><td class="px-5 py-3">de R$ 2.902,85 até R$ 4.354,27</td><td class="px-5 py-3">12%</td></tr>
+            <tr><td class="px-5 py-3">de R$ 4.354,28 até R$ 8.475,55 (teto)</td><td class="px-5 py-3">14%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="mt-3 text-xs text-ink-faint">
+      Alíquota progressiva: cada faixa do salário é descontada na sua própria
+      alíquota (igual ao Imposto de Renda), não a alíquota mais alta sobre o
+      valor inteiro. Salário mínimo 2026: R$ 1.621,00.
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/inss.js"></script>
+{% endblock %}

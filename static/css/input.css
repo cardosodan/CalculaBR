@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+/* Tokens de design do CalculaBR — Tailwind v4 (config CSS-first, sem
+   tailwind.config.js). Paleta verde-escuro/carvão (remete a "dinheiro,
+   crescimento, extrato bancário sério") com UM acento dourado/âmbar pros
+   resultados de cálculo e CTAs — nunca uma segunda cor vibrante disputando
+   atenção com o acento. Contraste verificado (luminância relativa WCAG)
+   antes de fechar os tons: ink 15.8:1, ink-muted 6.8:1, ink-faint 3.4:1
+   (só pra texto grande/decorativo, nunca corpo de texto normal). */
+@theme {
+  --color-base: #0F1613;
+  --color-surface: #16211C;
+  --color-elevated: #1E2B24;
+  --color-elevated-hover: #26362D;
+
+  --color-accent: #D4A72C;
+  --color-accent-hover: #E6BB3F;
+  --color-accent-ink: #1A1206;
+  /* texto ESCURO em cima do acento (dourado é claro demais pra texto claro em cima) */
+
+  --color-ink: #EDF1EE;
+  --color-ink-muted: #96A69C;
+  --color-ink-faint: #5C6B61;
+
+  --color-border: #263329;
+
+  /* Verde/vermelho semânticos — SEPARADOS do acento dourado. Usados só
+     pra indicar ganho/perda em resultados (ex: rendimento líquido positivo
+     vs. desconto), nunca como cor de marca/CTA. */
+  --color-good: #4ADE80;
+  --color-bad: #F87171;
+
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "Consolas", monospace;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+}
+
+/* Todo número de resultado (moeda, percentual, dias) usa a mono — alinhamento
+   tabular de verdade em vez de aproximar com font-variant-numeric numa fonte
+   proporcional (a IBM Plex Sans tem números tabulares OK, mas a mono reforça
+   a sensação de "extrato/planilha" que é a identidade visual do site). */
+.font-numeros {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+button, .btn-like {
+  transition: transform 120ms ease, filter 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+button:hover:not(:disabled), .btn-like:hover {
+  transform: translateY(-1px);
+}
+button:active:not(:disabled), .btn-like:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Input numérico sem as setinhas de incremento nativas do navegador — nesta
+   UI cada campo já tem prefixo "R$"/sufixo "%" desenhado, as setinhas do
+   Chrome ficavam por cima do texto em telas estreitas. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
