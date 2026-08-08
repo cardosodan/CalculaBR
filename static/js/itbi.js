@@ -19,10 +19,9 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
 
   const itbi = valorImovel * (aliquota / 100);
 
-  document.getElementById("r-itbi").textContent = formatarBRL(itbi);
-  document.getElementById("r-aliquota").textContent = formatarPercentual(aliquota);
-  document.getElementById("r-total-com-itbi").textContent = formatarBRL(valorImovel + itbi);
+  animarNumero(document.getElementById("r-itbi"), itbi, formatarBRL);
+  animarNumero(document.getElementById("r-aliquota"), aliquota, (v) => formatarPercentual(v));
+  animarNumero(document.getElementById("r-total-com-itbi"), valorImovel + itbi, formatarBRL);
 
-  document.getElementById("resultado").classList.remove("hidden");
-  document.getElementById("placeholder-resultado").classList.add("hidden");
+  revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
 });

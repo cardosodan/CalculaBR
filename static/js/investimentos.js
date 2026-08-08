@@ -71,7 +71,7 @@ document.getElementById("btn-comparar").addEventListener("click", () => {
 
   const container = document.getElementById("resultado-comparador");
   container.innerHTML = opcoes.map((o, i) => `
-    <div class="bg-surface border ${i === 0 ? "border-accent/40" : "border-border"} rounded-2xl p-5 flex items-center justify-between gap-4">
+    <div class="spotlight bg-surface border ${i === 0 ? "border-accent/40" : "border-border"} rounded-2xl p-5 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${i === 0 ? "bg-accent text-accent-ink" : "bg-elevated text-ink-muted"}">${i + 1}º</span>
         <div>
@@ -88,6 +88,8 @@ document.getElementById("btn-comparar").addEventListener("click", () => {
 
   container.classList.remove("hidden");
   document.getElementById("placeholder-comparador").classList.add("hidden");
+  animarEntradaEmLote(container.querySelectorAll(":scope > div"));
+  ativarSpotlightCards("#resultado-comparador .spotlight");
 });
 
 document.getElementById("btn-simular-jc").addEventListener("click", () => {
@@ -108,10 +110,9 @@ document.getElementById("btn-simular-jc").addEventListener("click", () => {
   }
   const totalJuros = saldo - totalInvestido;
 
-  document.getElementById("jc-r-montante").textContent = formatarBRL(saldo);
-  document.getElementById("jc-r-investido").textContent = formatarBRL(totalInvestido);
-  document.getElementById("jc-r-juros").textContent = formatarBRL(totalJuros);
+  animarNumero(document.getElementById("jc-r-montante"), saldo, formatarBRL, 1.1);
+  animarNumero(document.getElementById("jc-r-investido"), totalInvestido, formatarBRL);
+  animarNumero(document.getElementById("jc-r-juros"), totalJuros, formatarBRL);
 
-  document.getElementById("resultado-jc").classList.remove("hidden");
-  document.getElementById("placeholder-jc").classList.add("hidden");
+  revelarResultado(document.getElementById("resultado-jc"), document.getElementById("placeholder-jc"));
 });

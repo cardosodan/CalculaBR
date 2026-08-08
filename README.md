@@ -20,6 +20,37 @@ framework) — nenhum dado é enviado pra lugar nenhum.
   `common.js` com utilidades compartilhadas (formatação de moeda,
   parsing de número em pt-BR, contagem de meses/anos proporcionais).
 - **Alpine.js** (CDN) só pro menu mobile. **Lucide** (CDN) pros ícones.
+- **GSAP + ScrollTrigger** (CDN, versão fixa) — anima a entrada dos
+  painéis de resultado, conta os números grandes de R$/% em vez de só
+  trocar o texto, e revela os cards da home em cascata. Ver "Animações"
+  abaixo.
+
+## Animações (GSAP)
+
+Toda animação passa pelos helpers de `static/js/common.js`
+(`animarNumero`, `revelarResultado`, `animarEntradaEmLote`,
+`ativarSpotlightCards`) em vez de cada calculadora reimplementar a
+própria — usados de forma idêntica nas 5 calculadoras.
+
+**Achado real, corrigido**: testando com automação (Playwright), um tween
+do GSAP disparado no carregamento da página às vezes travava no meio
+(aba sem foco, `requestAnimationFrame` irregular) e deixava o elemento
+preso numa opacidade intermediária/corrompida — em vez de só "sem
+animação", ficava um **resultado errado parado na tela pra sempre**.
+Corrigido com uma rede de segurança: todo `gsap.to/from/fromTo` chamado
+por esses helpers tem um `setTimeout` companheiro que força o **valor/
+estado final correto**, disparado um pouco depois da duração esperada da
+animação — não importa o que aconteça com o tween em si, o usuário nunca
+vê um número intermediário grudado na tela.
+
+**Cuidado ao escrever esse tipo de rede de segurança**: a primeira versão
+usava `gsap.set(el, {clearProps: "opacity,transform"})`, que remove o
+estilo inline e deixa o elemento cair de volta pro CSS "de base" — seguro
+aqui porque nenhum elemento animado tem uma regra CSS de `opacity`
+própria (o estado "escondido" vem só de classe `hidden`/inline style, não
+de CSS estático). Sempre usar **valores explícitos** (`{opacity: 1, y: 0}`)
+em vez de `clearProps` numa rede de segurança dessas, a menos que esteja
+100% confirmado que o CSS de base do elemento já é visível por natureza.
 
 ## Estrutura
 

@@ -64,6 +64,31 @@ button:active:not(:disabled), .btn-like:active {
   transform: translateY(0) scale(0.97);
 }
 
+/* "Spotlight card": glow que segue o cursor (mesma técnica usada no site
+   da DCodes) — --spot-x/--spot-y são atualizadas via JS
+   (ativarSpotlightCards em common.js, só em telas com mouse de verdade).
+   z-index:-1 no ::before garante que o glow fica ACIMA do fundo do card
+   mas ABAIXO do conteúdo, sem precisar tocar no z-index de nenhum filho. */
+.spotlight {
+  --spot-x: 50%;
+  --spot-y: 50%;
+  position: relative;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(360px circle at var(--spot-x) var(--spot-y), color-mix(in srgb, var(--color-accent) 16%, transparent), transparent 72%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.spotlight:hover::before {
+  opacity: 1;
+}
+
 /* Input numérico sem as setinhas de incremento nativas do navegador — nesta
    UI cada campo já tem prefixo "R$"/sufixo "%" desenhado, as setinhas do
    Chrome ficavam por cima do texto em telas estreitas. */

@@ -107,7 +107,7 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
 
   const resultado = calcularVerbas({ tipo, admissao, desligamento, salario, avisoTipo, temFeriasVencidas, fgtsSaldoInformado });
 
-  document.getElementById("r-total").textContent = formatarBRL(resultado.total);
+  animarNumero(document.getElementById("r-total"), resultado.total, formatarBRL, 1.1);
 
   const tabela = document.getElementById("r-tabela-verbas");
   tabela.innerHTML = "";
@@ -119,6 +119,7 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
       : `<td class="py-2.5 text-ink-faint">${linha.label}</td><td class="py-2.5 text-right text-ink-faint">não aplicável</td>`;
     tabela.appendChild(tr);
   });
+  animarEntradaEmLote(tabela.querySelectorAll("tr"), { delay: 0.15 });
 
   const notas = [];
   if (resultado.avisoIndenizado) {
@@ -138,6 +139,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   }
   document.getElementById("r-notas").innerHTML = notas.map((n) => `<p>• ${n}</p>`).join("");
 
-  document.getElementById("resultado").classList.remove("hidden");
-  document.getElementById("placeholder-resultado").classList.add("hidden");
+  revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
 });

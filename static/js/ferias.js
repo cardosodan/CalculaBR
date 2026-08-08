@@ -24,17 +24,16 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   const terco = valorFerias / 3;
   const dias = Math.round((30 / 12) * meses);
 
-  document.getElementById("r-meses").textContent = meses;
-  document.getElementById("r-dias").textContent = dias + " dias";
-  document.getElementById("r-terco").textContent = formatarBRL(terco);
-  document.getElementById("r-total").textContent = formatarBRL(valorFerias + terco);
+  animarNumero(document.getElementById("r-meses"), meses, (v) => Math.round(v), 0.6);
+  animarNumero(document.getElementById("r-dias"), dias, (v) => Math.round(v) + " dias", 0.6);
+  animarNumero(document.getElementById("r-terco"), terco, formatarBRL);
+  animarNumero(document.getElementById("r-total"), valorFerias + terco, formatarBRL);
 
   const temVencidas = document.getElementById("tem-vencidas").checked;
   document.getElementById("bloco-vencidas").classList.toggle("hidden", !temVencidas);
   if (temVencidas) {
-    document.getElementById("r-vencidas").textContent = formatarBRL(salario + salario / 3);
+    animarNumero(document.getElementById("r-vencidas"), salario + salario / 3, formatarBRL);
   }
 
-  document.getElementById("resultado").classList.remove("hidden");
-  document.getElementById("placeholder-resultado").classList.add("hidden");
+  revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
 });

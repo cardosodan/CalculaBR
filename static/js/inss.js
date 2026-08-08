@@ -28,13 +28,12 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   const { desconto, acimaDoTeto } = calcularDescontoINSS(salario);
   const liquido = salario - desconto;
 
-  document.getElementById("r-desconto").textContent = formatarBRL(desconto);
-  document.getElementById("r-liquido").textContent = formatarBRL(liquido);
-  document.getElementById("r-aliquota-efetiva").textContent = formatarPercentual((desconto / salario) * 100, 2);
+  animarNumero(document.getElementById("r-desconto"), desconto, formatarBRL);
+  animarNumero(document.getElementById("r-liquido"), liquido, formatarBRL);
+  animarNumero(document.getElementById("r-aliquota-efetiva"), (desconto / salario) * 100, (v) => formatarPercentual(v, 2));
   document.getElementById("r-teto-aviso").classList.toggle("hidden", !acimaDoTeto);
 
-  document.getElementById("resultado").classList.remove("hidden");
-  document.getElementById("placeholder-resultado").classList.add("hidden");
+  revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
 });
 
 document.getElementById("salario").addEventListener("keydown", (e) => {
