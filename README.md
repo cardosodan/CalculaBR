@@ -439,6 +439,37 @@ Reteste completo (Playwright, troca de categoria + busca + ticker +
 Meus Cálculos + 20 páginas) confirmando que nada quebrou com o aumento
 de densidade — só respiro visual a mais.
 
+### v4.2 — "TA SEM NENHUMA ESTETICA BONITA"
+
+Posição (v4) e respiro (v4.1) resolvidos, mas a página ficou
+monocromática/plana — só texto sobre fundo sólido, nenhuma
+textura/profundidade/acento visual além da tipografia. Adição de uma
+camada de polimento, sem mexer em posição nem densidade de novo:
+
+- **`.folha-extrato`** (novo, `input.css`): grade fininha de papel
+  quadriculado full-bleed atrás de todo o conteúdo da home (ecoa a
+  régua de um extrato/planilha de verdade — não é textura genérica solta,
+  é o mesmo objeto que já dá nome à página) + um glow dourado ambiente
+  bem sutil no canto superior esquerdo (`radial-gradient` a 13% de
+  opacidade do acento, `z-index:0` atrás do conteúdo real).
+- **Badges de ícone**: ícones que antes eram só um glifo colorido solto
+  (na sidebar e em cada linha do painel) ganharam um chip com fundo
+  tingido (`bg-elevated`/`bg-accent/15` conforme destaque/ativo) —
+  mais peso visual sem reintroduzir cartão nenhum (é só o ícone que
+  ganhou uma "casinha", a linha continua sendo uma linha).
+- **Ticker "simular líquido"**: ganhou uma linha de gradiente dourado no
+  topo (`before:` pseudo-elemento) e sombra suave — antes era uma caixa
+  completamente plana.
+- **Item ativo da sidebar**: ganhou sombra sutil além do já existente
+  destaque de cor/borda.
+- **"R$ 0,00 cobrados"** (linha de total): ganhou tamanho maior e um
+  `drop-shadow` dourado sutil — o número que fecha a página (o "saldo")
+  merece um pouco mais de presença que o resto do texto ao redor.
+
+Reteste completo de novo (Playwright): troca de categoria, busca,
+ticker, Meus Cálculos, e as 20 páginas sem erro de console — a camada
+de polimento não introduziu nenhuma regressão funcional.
+
 ## Escopo consciente (o que NÃO está incluído)
 
 - IRRF sobre saldo de salário/13º proporcional **dentro da rescisão**

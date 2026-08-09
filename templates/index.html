@@ -14,7 +14,17 @@
      empilhadas). Both mobile e desktop agora usam o MESMO modelo de
      interação (selecionar categoria → ver só ela), em vez de
      acordeão-no-mobile/grid-no-desktop como antes — unifica o
-     comportamento em vez de divergir por breakpoint. -->
+     comportamento em vez de divergir por breakpoint.
+
+     v4.2 — "TA SEM NENHUMA ESTETICA BONITA": posição (v4) e respiro
+     (v4.1) resolvidos, mas a página ficou monocromática/plana — só
+     texto e linhas finas, nenhuma textura/profundidade/acento visual.
+     `.folha-extrato` (input.css) adiciona uma grade fininha de papel
+     quadriculado full-bleed (ecoa régua de planilha/extrato de verdade,
+     não decoração solta) + um glow ambiente sutil no canto superior —
+     camada de polimento em CIMA da mesma estrutura, não mexe em posição
+     nem densidade de novo. -->
+<div class="folha-extrato">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-24">
 
   <div class="reveal-item flex items-center justify-between gap-4 pb-5 text-[11px] font-numeros tracking-[0.15em] text-ink-faint uppercase">
@@ -47,7 +57,7 @@
       </template>
     </div>
 
-    <div class="flex items-center gap-3 font-numeros text-sm bg-surface border border-border px-5 py-3 shrink-0">
+    <div class="relative flex items-center gap-3 font-numeros text-sm bg-surface border border-accent/25 px-5 py-3 shrink-0 shadow-[0_12px_28px_-16px_rgba(0,0,0,0.7)] before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-accent/70 before:to-transparent">
       <span class="text-ink-faint text-[10px] uppercase tracking-wide hidden md:inline">Simular líquido</span>
       <span class="text-ink-faint">R$</span>
       <input id="ticker-salario" type="text" inputmode="decimal" value="3000"
@@ -76,9 +86,12 @@
       <nav class="flex lg:flex-col gap-1.5 -mx-1 overflow-x-auto no-scrollbar">
         {% for categoria in categorias_nav %}
           <button type="button" @click="categoriaAtiva = '{{ categoria.slug }}'"
-                  class="shrink-0 lg:shrink flex items-center gap-3 mx-1 lg:mx-0 px-3.5 py-3 text-left border-l-2 whitespace-nowrap transition-colors"
-                  :class="categoriaAtiva === '{{ categoria.slug }}' ? 'border-accent bg-elevated text-ink' : 'border-transparent text-ink-faint hover:text-ink hover:bg-elevated/50'">
-            <i data-lucide="{{ categoria.icone }}" class="w-4.5 h-4.5 shrink-0"></i>
+                  class="shrink-0 lg:shrink flex items-center gap-3 mx-1 lg:mx-0 px-3 py-2.5 text-left border-l-2 whitespace-nowrap transition-all"
+                  :class="categoriaAtiva === '{{ categoria.slug }}' ? 'border-accent bg-elevated text-ink shadow-[0_4px_16px_-6px_rgba(0,0,0,0.5)]' : 'border-transparent text-ink-faint hover:text-ink hover:bg-elevated/50'">
+            <span class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors"
+                  :class="categoriaAtiva === '{{ categoria.slug }}' ? 'bg-accent/15 text-accent' : 'bg-elevated text-ink-faint'">
+              <i data-lucide="{{ categoria.icone }}" class="w-4 h-4"></i>
+            </span>
             <span class="font-medium text-sm">{{ categoria.nome }}</span>
             <span class="font-numeros text-xs opacity-70">{{ categoria.itens | length }}</span>
           </button>
@@ -109,7 +122,9 @@
               <a href="/{{ item.href }}"
                  class="group flex items-center gap-4 sm:gap-5 py-5 sm:py-6 -mx-4 px-4 sm:-mx-5 sm:px-5 hover:bg-elevated/60 transition-colors {{ 'bg-elevated/35' if destaque else '' }}">
                 <span class="font-numeros text-xs w-8 shrink-0 {{ 'text-accent' if destaque else 'text-ink-faint' }}">{{ "%03d"|format(loop.index) }}</span>
-                <i data-lucide="{{ item.icone }}" class="w-5 h-5 text-accent shrink-0 hidden sm:block"></i>
+                <span class="w-9 h-9 rounded-lg items-center justify-center shrink-0 hidden sm:flex transition-colors {{ 'bg-accent/15 text-accent' if destaque else 'bg-elevated text-accent group-hover:bg-accent/15' }}">
+                  <i data-lucide="{{ item.icone }}" class="w-4.5 h-4.5"></i>
+                </span>
                 <div class="min-w-0 flex-1">
                   <p class="font-display font-semibold text-ink group-hover:text-accent transition-colors {{ 'text-xl' if destaque else 'text-base' }}">{{ item.label }}</p>
                   <p class="text-sm text-ink-muted mt-1 line-clamp-1 sm:line-clamp-none">{{ item.desc }}</p>
@@ -128,11 +143,12 @@
 
   <div class="mt-16 pt-5 border-t-[3px] border-double border-border flex flex-wrap items-baseline justify-between gap-3">
     <span class="font-numeros text-xs text-ink-faint uppercase tracking-wide">Total do extrato</span>
-    <span class="font-numeros text-base text-ink">18 calculadoras · 4 áreas · <span class="text-accent font-bold">R$ 0,00</span> cobrados</span>
+    <span class="font-numeros text-base text-ink">18 calculadoras · 4 áreas · <span class="text-accent font-bold text-lg drop-shadow-[0_0_18px_rgba(212,167,44,0.35)]">R$ 0,00</span> cobrados</span>
   </div>
   <p class="lg:hidden font-numeros text-xs text-ink-faint mt-4">
     Tabelas conferidas em {{ verificado_em }} · 100% no navegador, sem cadastro.
   </p>
+</div>
 </div>
 {% endblock %}
 

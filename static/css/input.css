@@ -123,6 +123,38 @@ button:active:not(:disabled), .btn-like:active {
   opacity: 0.7;
 }
 
+/* v4.2 — "TA SEM NENHUMA ESTETICA BONITA": posição (v4) e respiro
+   (v4.1) já resolvidos, mas a página ficou monocromática/plana — só
+   texto sobre fundo sólido, zero textura/profundidade. `.folha-extrato`
+   é só uma CAMADA DE POLIMENTO por cima da mesma estrutura (não mexe em
+   posição/densidade de novo): grade fininha de papel quadriculado
+   full-bleed (ecoa régua de ledger/planilha de verdade — não é
+   decoração solta, é o mesmo objeto que já dá nome à página inteira) +
+   um glow dourado ambiente bem sutil no canto superior esquerdo, atrás
+   do conteúdo (z-index 0, conteúdo real fica em z-index 1). */
+.folha-extrato {
+  position: relative;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-border) 40%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-border) 40%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.folha-extrato::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: -80px;
+  width: 620px;
+  height: 560px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 13%, transparent), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.folha-extrato > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* Input numérico sem as setinhas de incremento nativas do navegador — nesta
    UI cada campo já tem prefixo "R$"/sufixo "%" desenhado, as setinhas do
    Chrome ficavam por cima do texto em telas estreitas. */
