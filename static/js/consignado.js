@@ -16,4 +16,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   animarNumero(document.getElementById("r-juros"), totalJuros, formatarBRL);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("Empréstimo Consignado", "consignado.html", `Valor máximo disponível: ${formatarBRL(valorMaximo)}`);
 });

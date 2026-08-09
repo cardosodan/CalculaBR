@@ -53,4 +53,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   }
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("CLT vs PJ", "clt-vs-pj.html", `CLT ${formatarBRL(totalClt)} vs PJ ${formatarBRL(totalPj)}`);
 });

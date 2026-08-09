@@ -26,4 +26,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   document.getElementById("r-aliquota-efetiva").textContent = formatarPercentual(((bruto - liquido) / bruto) * 100, 1);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("Salário Líquido", "salario-liquido.html", `Bruto ${formatarBRL(bruto)} → líquido ${formatarBRL(liquido)}`);
 });

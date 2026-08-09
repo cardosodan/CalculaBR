@@ -24,4 +24,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   animarNumero(document.getElementById("r-total-com-itbi"), valorImovel + itbi, formatarBRL);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("ITBI", "itbi.html", `Imóvel ${formatarBRL(valorImovel)}: ITBI de ${formatarBRL(itbi)}`);
 });

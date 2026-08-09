@@ -24,4 +24,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
     : `As duas ficaram próximas no total pago nessas condições.`;
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("Financiamento Imobiliário", "financiamento-imobiliario.html", `SAC ${formatarBRL(sac.totalPago)} vs Price ${formatarBRL(price.totalPago)} no total`);
 });

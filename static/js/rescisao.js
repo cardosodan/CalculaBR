@@ -140,4 +140,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   document.getElementById("r-notas").innerHTML = notas.map((n) => `<p>• ${n}</p>`).join("");
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("Rescisão Trabalhista", "rescisao.html", `${tipo.replace(/_/g, " ")}, salário ${formatarBRL(salario)}: total ${formatarBRL(resultado.total)}`);
 });

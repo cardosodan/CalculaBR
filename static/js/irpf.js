@@ -61,4 +61,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   }
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("IRPF", "irpf.html", `Imposto estimado: ${formatarBRL(impostoFinal)} (${usarSimplificado ? "simplificado" : "completo"})`);
 });

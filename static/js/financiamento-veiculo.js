@@ -13,4 +13,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   document.getElementById("r-percentual-a-mais").textContent = formatarPercentual((totalJuros / valor) * 100, 0);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("Financiamento de Veículo", "financiamento-veiculo.html", `Parcela de ${formatarBRL(parcela)}/mês`);
 });

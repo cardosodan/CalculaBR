@@ -91,6 +91,7 @@ document.getElementById("btn-comparar").addEventListener("click", () => {
   animarEntradaEmLote(container.querySelectorAll(":scope > div"));
   ativarSpotlightCards("#resultado-comparador .spotlight");
   adicionarBotaoExportar(container);
+  registrarNoDashboard("Investimentos", "investimentos.html", `Melhor opção: ${opcoes[0].nome} (${formatarBRL(opcoes[0].liquido)})`);
 });
 
 document.getElementById("btn-simular-jc").addEventListener("click", () => {
@@ -116,4 +117,5 @@ document.getElementById("btn-simular-jc").addEventListener("click", () => {
   animarNumero(document.getElementById("jc-r-juros"), totalJuros, formatarBRL);
 
   revelarResultado(document.getElementById("resultado-jc"), document.getElementById("placeholder-jc"));
+  registrarNoDashboard("Investimentos", "investimentos.html", `Juros compostos: montante final de ${formatarBRL(saldo)}`);
 });

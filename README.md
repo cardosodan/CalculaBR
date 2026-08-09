@@ -27,7 +27,9 @@ framework) — nenhum dado é enviado pra lugar nenhum.
 - **JS**: vanilla, um arquivo por calculadora em `static/js/`, mais
   `common.js` com utilidades compartilhadas (formatação de moeda,
   parsing de número em pt-BR, contagem de meses/anos proporcionais).
-- **Alpine.js** (CDN) só pro menu mobile. **Lucide** (CDN) pros ícones.
+- **Alpine.js** (CDN) pro menu mobile, dropdowns do header, busca
+  instantânea da home e o acordeão de categorias no catálogo mobile.
+  **Lucide** (CDN) pros ícones.
 - **GSAP + ScrollTrigger** (CDN, versão fixa) — anima a entrada dos
   painéis de resultado, conta os números grandes de R$/% em vez de só
   trocar o texto, e revela os cards da home em cascata. Ver "Animações"
@@ -198,13 +200,101 @@ sem crédito). Da resposta, o que virou ação de verdade:
 **Redesign da home** (pedido separado do usuário: "o design tá muito
 genérico de IA, sempre texto e bloquinhos"): hero centralizado + grid
 uniforme de cards idênticos — o padrão mais repetido em site gerado por
-IA que existe — trocado por hero assimétrico (texto à esquerda, um
-"visor" decorativo à direita que cicla resultados reais das próprias
-calculadoras) + faixa de confiança em marquee horizontal + bento grid por
+IA que existe — trocado por hero assimétrico (texto à esquerda, decoração
+à direita) + faixa de confiança em marquee horizontal + bento grid por
 categoria (1º item de cada categoria vira um card grande/largo de
 destaque, o resto varia entre largo e estreito, nunca caixinhas
 uniformes). Fonte de título trocada de Fraunces (serifada) pra Manrope
 (geométrica) num pedido anterior do usuário pelo mesmo motivo.
+
+## Hero "recibo" — a home e a DCodes ficaram parecidas demais
+
+O usuário mandou os heros de CalculaBR e DCodes lado a lado e apontou:
+"percebe como os sites que vc faz são absurdamente semelhantes?" — os
+dois usavam a MESMA fórmula composicional (badge pill + título de 3
+linhas com uma palavra de destaque colorida + parágrafo + card
+arredondado com badge flutuante), só trocando cor/fonte/conteúdo — o tipo
+de reaproveitamento de identidade visual entre projetos de clientes
+diferentes que já era pra ser evitado por padrão.
+
+O antigo "visor" decorativo (só cosmético, ciclava resultados de exemplo)
+foi substituído por um **recibo de papel interativo de verdade**: borda
+serrilhada via CSS (`.recibo::before`/`::after`, gradiente triangular
+repetido), sem cantos arredondados, divisores tracejados, tudo
+monoespaçado — uma metáfora que só faz sentido pra uma calculadora
+(nota fiscal), impossível de confundir com o card do DCodes. E,
+diferente do visor antigo, é **funcional**: o campo "Salário Bruto" é um
+input de verdade, recalcula ao vivo a cada tecla reaproveitando
+`calcularDescontoINSS`/`calcularIRRFMensal` (as mesmas funções da
+calculadora de Salário Líquido real) — não é decoração, é a própria
+calculadora em miniatura.
+
+## Rodada de UX (contraste WCAG, dashboard local, catálogo mobile)
+
+Pedido do usuário: 4 prompts de design genéricos ("landing page
+minimalista com CTAs", "UX de e-commerce focado em conversão mobile",
+"paleta acessível pra site financeiro", "dashboard SaaS estilo
+IA 2026") — perguntei se era mockup ou trabalho real; confirmado "é para
+o calculabr". Traduzidos pra trabalho concreto e consistente com a
+arquitetura do site (sem backend, sem conta, nada sai do navegador):
+
+- **Auditoria de contraste WCAG de verdade** (não "olhômetro"): script
+  Python aplicando a fórmula oficial de luminância relativa
+  (sRGB→linear + soma ponderada) em cada par texto/fundo e
+  borda/fundo da paleta. Achou 2 falhas reais que um comentário anterior
+  no `input.css` tinha marcado como "verificado" incorretamente — o
+  erro foi aplicar a isenção de "texto grande" (limiar 3:1) a texto que
+  na prática é sempre `text-xs`/menor no site inteiro, que exige o
+  limiar cheio de 4.5:1:
+  - `--color-ink-faint`: `#5C6B61` (3.26:1 contra o fundo — falhava)
+    → `#84938A` (4.5:1+).
+  - `--color-border`: `#263329` (1.39:1 contra o fundo — falhava o
+    limiar de UI não-textual 1.4.11, 3:1, relevante porque é usado como
+    borda visível de `<input>`) → `#556F5C` (3:1+).
+- **"Meus Cálculos"** (`meus-calculos.html`, nova página) — o pedido de
+  "dashboard estilo SaaS de IA" implementado sem violar o "nada sai do
+  navegador": histórico 100% em `localStorage`
+  (`common.js`: `registrarNoDashboard`/`lerHistoricoDashboard`,
+  chave `calculabr_historico_v1`, máx. 50 itens). Cada uma das 18
+  calculadoras chama `registrarNoDashboard(titulo, href, resumo)` logo
+  após revelar o resultado — o dashboard mostra estatísticas (total de
+  cálculos, calculadoras distintas usadas, mais usada), lista com tempo
+  relativo ("há 2h", "ontem") e botões de remover item/limpar tudo. Link
+  "Meus Cálculos" no header (desktop e mobile) e agora também no hero da
+  home.
+- **Catálogo mobile estilo e-commerce** (pedido: "UX pra e-commerce com
+  muitos produtos, foco em conversão mobile" → aplicado às 18
+  calculadoras): duas peças novas, só visíveis abaixo do breakpoint `lg`
+  (desktop já vê tudo de uma vez, sem necessidade):
+  1. **Barra de acesso rápido** (`index.html`, logo abaixo da faixa de
+     confiança) — chips horizontais por categoria (`sticky top-16`,
+     rolagem lateral sem scrollbar visível via `.no-scrollbar` em
+     `input.css`), âncora direto pra cada seção (`#cat-{slug}`, slug
+     novo em cada categoria de `CATEGORIAS_NAV`, `build.py`).
+  2. **Acordeão por categoria** — só a 1ª categoria (Trabalhista) começa
+     aberta no mobile; as outras 3 começam fechadas (18 itens de cara é
+     fricção, não conversão) e abrem ao tocar no cabeçalho. Implementado
+     com Alpine (`x-data="{ aberto: ... }"` por categoria) usando
+     `:class="{ 'max-lg:hidden': !aberto }"` — sintaxe de OBJETO de
+     propósito (não string), que só adiciona/remove essa classe
+     específica sem tocar nas outras (`grid`/`lg:grid-cols-4`/etc). O
+     estado inicial (fechado/aberto) também nasce direto na classe
+     estática renderizada pelo Jinja (`{{ ' max-lg:hidden' if not
+     loop.first }}`) — evita o flash de "tudo aberto" que apareceria por
+     uma fração de segundo entre o HTML carregar e o Alpine (script
+     `defer`) hidratar, mesmo cuidado de FOUC que o menu mobile já
+     tratava com `style="display:none"` estático.
+  3. **CTAs no hero**: um pedido à parte ("landing minimalista... CTAs")
+     — a busca instantânea já existia como via rápida, mas não havia
+     nenhum link/botão explícito de "começar". Adicionados dois links
+     discretos (não outro botão do tamanho da busca, pra não competir
+     com ela): "Ver as 18 calculadoras ↓" (âncora pra
+     `#cat-trabalhista`, mesmo destino dos chips) e "Meus Cálculos".
+
+Testado com Playwright (mobile 390×844 + desktop 1440×900): acordeão
+abre/fecha corretamente, chips não geram erro, "Meus Cálculos" registra/
+remove/limpa de verdade, e as 20 páginas carregam sem erro de console em
+nenhum dos dois viewports.
 
 ## Escopo consciente (o que NÃO está incluído)
 

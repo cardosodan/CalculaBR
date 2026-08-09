@@ -27,4 +27,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   }
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("MEI (DAS)", "mei.html", `DAS mensal de ${formatarBRL(dasMensal)}`);
 });

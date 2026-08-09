@@ -29,4 +29,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   animarNumero(document.getElementById("r-segunda"), segunda, formatarBRL);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("13º Salário", "decimo-terceiro.html", `Salário ${formatarBRL(salario)}: total líquido ${formatarBRL(totalLiquido)}`);
 });

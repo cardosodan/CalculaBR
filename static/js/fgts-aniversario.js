@@ -30,4 +30,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   animarNumero(document.getElementById("r-aniversario-rescisao"), multa40, formatarBRL);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("FGTS: Saque-Aniversário", "fgts-aniversario.html", `Saldo ${formatarBRL(saldo)}: saque de ${formatarBRL(saqueAniversario)} este ano`);
 });

@@ -56,13 +56,26 @@
         {% endfor %}
       </div>
 
-      <button @click="menuAberto = !menuAberto" class="md:hidden text-ink-muted hover:text-ink" aria-label="Abrir menu">
-        <i data-lucide="menu" class="w-6 h-6"></i>
-      </button>
+      <div class="flex items-center gap-1 shrink-0">
+        <!-- Cross-categoria, por isso fica fora dos dropdowns — "Meus
+             Cálculos" (histórico local) faz sentido em qualquer contexto. -->
+        <a href="/meus-calculos.html"
+           class="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                  {% if active == 'meus-calculos' %}bg-elevated text-accent{% else %}text-ink-muted hover:text-ink hover:bg-elevated{% endif %}">
+          <i data-lucide="history" class="w-4 h-4"></i>
+          Meus Cálculos
+        </a>
+        <button @click="menuAberto = !menuAberto" class="md:hidden text-ink-muted hover:text-ink" aria-label="Abrir menu">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
 
       <!-- Mobile: lista com cabeçalho de categoria, tudo visível de uma vez (sem submenu dentro de submenu). -->
       <div x-show="menuAberto" @click.outside="menuAberto = false" x-transition
            class="md:hidden absolute top-16 left-0 right-0 max-h-[calc(100vh-4rem)] overflow-y-auto bg-surface border-b border-border px-4 py-3" style="display: none;">
+        <a href="/meus-calculos.html" class="flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium {% if active == 'meus-calculos' %}bg-elevated text-accent{% else %}text-ink-muted{% endif %}">
+          <i data-lucide="history" class="w-4 h-4"></i> Meus Cálculos
+        </a>
         {% for categoria in categorias_nav %}
           <p class="px-3 pt-3 pb-1.5 text-xs font-semibold uppercase tracking-wide text-ink-faint">{{ categoria.nome }}</p>
           {% for item in categoria.itens %}

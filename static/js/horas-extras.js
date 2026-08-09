@@ -25,4 +25,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   if (usaDSR) animarNumero(document.getElementById("r-dsr"), dsr, formatarBRL);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("Horas Extras", "horas-extras.html", `Total a receber: ${formatarBRL(total)}`);
 });

@@ -17,6 +17,7 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   document.getElementById("r-teto-aviso").classList.toggle("hidden", !acimaDoTeto);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("INSS", "inss.html", `Salário ${formatarBRL(salario)}: desconto de ${formatarBRL(desconto)}`);
 });
 
 document.getElementById("salario").addEventListener("keydown", (e) => {

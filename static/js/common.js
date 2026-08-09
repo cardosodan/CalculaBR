@@ -309,3 +309,47 @@ function calcularValorMaximoPrice(parcela, taxaMensal, prazoMeses) {
   const fator = Math.pow(1 + taxaMensal, prazoMeses);
   return parcela * (fator - 1) / (taxaMensal * fator);
 }
+
+/* ==========================================================================
+   "MEUS CÁLCULOS" — histórico 100% local (localStorage), lido por
+   meus-calculos.html. Nunca sai do navegador — mesmo princípio do resto
+   do site, só que persistido em vez de esquecido ao fechar a aba. Cada
+   calculadora chama registrarNoDashboard(...) uma vez, logo depois de
+   mostrar o resultado, com um resumo em texto natural do que foi
+   calculado (não só o número — sem contexto um número sozinho não diz
+   nada num histórico de calculadoras diferentes).
+   ========================================================================== */
+const HISTORICO_CHAVE = "calculabr_historico_v1";
+const HISTORICO_MAX = 50;
+
+function registrarNoDashboard(titulo, href, resumo) {
+  try {
+    const lista = JSON.parse(localStorage.getItem(HISTORICO_CHAVE) || "[]");
+    lista.unshift({ titulo, href, resumo, ts: Date.now() });
+    localStorage.setItem(HISTORICO_CHAVE, JSON.stringify(lista.slice(0, HISTORICO_MAX)));
+  } catch (erro) {
+    // localStorage indisponível (modo privado bloqueando, cota cheia etc.)
+    // — nunca deixa isso quebrar a calculadora em si, só não salva histórico.
+  }
+}
+
+function lerHistoricoDashboard() {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORICO_CHAVE) || "[]");
+  } catch (erro) {
+    return [];
+  }
+}
+
+function formatarTempoRelativo(ts) {
+  const segundos = Math.floor((Date.now() - ts) / 1000);
+  if (segundos < 60) return "agora mesmo";
+  const minutos = Math.floor(segundos / 60);
+  if (minutos < 60) return `há ${minutos} min`;
+  const horas = Math.floor(minutos / 60);
+  if (horas < 24) return `há ${horas}h`;
+  const dias = Math.floor(horas / 24);
+  if (dias === 1) return "ontem";
+  if (dias < 7) return `há ${dias} dias`;
+  return new Date(ts).toLocaleDateString("pt-BR");
+}

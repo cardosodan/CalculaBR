@@ -10,4 +10,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   animarNumero(document.getElementById("r-desconto"), anual * 0.9, formatarBRL);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("IPTU", "iptu.html", `Imóvel ${formatarBRL(valorVenal)}: IPTU anual de ${formatarBRL(anual)}`);
 });

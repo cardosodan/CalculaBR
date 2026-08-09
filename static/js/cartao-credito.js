@@ -18,4 +18,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   animarNumero(document.getElementById("r-juros-total"), jurosTotal, formatarBRL);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("Cartão de Crédito", "cartao-credito.html", `Rotativo: ${formatarBRL(naoPago)} viraria ${formatarBRL(saldo)}`);
 });

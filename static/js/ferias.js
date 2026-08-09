@@ -36,4 +36,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   }
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("Férias Proporcionais", "ferias.html", `${meses} meses acumulados: ${formatarBRL(valorFerias + terco)}`);
 });

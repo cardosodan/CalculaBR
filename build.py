@@ -24,6 +24,7 @@ DIST = RAIZ / "dist"
 # mobile; a home (index.html) usa a mesma estrutura pras seções.
 CATEGORIAS_NAV = [
     {
+        "slug": "trabalhista",
         "nome": "Trabalhista",
         "icone": "briefcase",
         "itens": [
@@ -46,6 +47,7 @@ CATEGORIAS_NAV = [
         ],
     },
     {
+        "slug": "tributario",
         "nome": "Tributário",
         "icone": "receipt",
         "itens": [
@@ -62,6 +64,7 @@ CATEGORIAS_NAV = [
         ],
     },
     {
+        "slug": "credito-financiamento",
         "nome": "Crédito & Financiamento",
         "icone": "credit-card",
         "itens": [
@@ -76,6 +79,7 @@ CATEGORIAS_NAV = [
         ],
     },
     {
+        "slug": "investimentos",
         "nome": "Investimentos",
         "icone": "trending-up",
         "itens": [
@@ -102,6 +106,7 @@ VERIFICADO_EM = "agosto de 2026"
 # o item certo do nav (mesmo slug usado em CATEGORIAS_NAV).
 PAGINAS = [
     {"template": "index.html", "saida": "index.html", "active": None},
+    {"template": "meus-calculos.html", "saida": "meus-calculos.html", "active": "meus-calculos"},
 ] + [
     {"template": item["href"], "saida": item["href"], "active": item["slug"]}
     for item in NAV_ITEMS

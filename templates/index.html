@@ -40,6 +40,21 @@
           </div>
         </template>
       </div>
+
+      <!-- Chamadas para ação: a busca acima já é a via rápida "eu sei o
+           que quero"; estas duas são pra quem prefere navegar — uma pro
+           catálogo (mesma âncora dos chips de acesso rápido mobile) e
+           uma pro histórico local. De propósito discretas (texto +
+           ícone, não outro botão preenchido do tamanho da busca), pra
+           não competir com ela. -->
+      <div class="hero-home__item mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+        <a href="#cat-trabalhista" class="inline-flex items-center gap-1.5 font-medium text-ink hover:text-accent transition-colors">
+          Ver as 18 calculadoras <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
+        </a>
+        <a href="/meus-calculos.html" class="inline-flex items-center gap-1.5 text-ink-faint hover:text-accent transition-colors">
+          <i data-lucide="history" class="w-3.5 h-3.5"></i> Meus Cálculos
+        </a>
+      </div>
     </div>
 
     <!-- "Recibo" interativo — de propósito NADA de card arredondado com
@@ -95,21 +110,58 @@
   </div>
 </div>
 
+<!-- Acesso rápido por categoria — só mobile (desktop já tem os dropdowns
+     do header + as 4 seções cabem numa rolada só de scroll normal). Mesmo
+     padrão "chips de categoria" que apps de e-commerce usam pra deixar
+     catálogos grandes navegáveis sem rolar a lista inteira às cegas —
+     aqui viram âncora direto pra seção (id="cat-{slug}" abaixo), não um
+     filtro de verdade (não tem o que filtrar além de mostrar/esconder). -->
+<div class="lg:hidden sticky top-16 z-30 bg-base/95 backdrop-blur border-b border-border">
+  <div class="no-scrollbar flex items-center gap-2 overflow-x-auto px-4 py-3">
+    {% for categoria in categorias_nav %}
+      <a href="#cat-{{ categoria.slug }}"
+         class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium bg-elevated text-ink-muted border border-border active:scale-95 transition-transform">
+        <i data-lucide="{{ categoria.icone }}" class="w-3.5 h-3.5"></i>
+        {{ categoria.nome }}
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
 <section class="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-16">
   {% for categoria in categorias_nav %}
-    <div class="categoria-home">
-      <div class="flex items-center gap-2.5 mb-5">
-        <div class="w-8 h-8 rounded-lg bg-elevated flex items-center justify-center text-accent">
+    <div id="cat-{{ categoria.slug }}" class="categoria-home scroll-mt-32" x-data="{ aberto: {{ 'true' if loop.first else 'false' }} }">
+      <!-- No mobile isso é um acordeão de verdade (só a 1ª categoria
+           começa aberta — 18 itens de cara é fricção, não conversão); no
+           desktop o botão continua clicável mas sem efeito nenhum, porque
+           o grid abaixo força "lg:grid" independente de `aberto`
+           (max-lg:hidden só existe como regra de mídia até 1023px, nunca
+           briga com lg:grid). -->
+      <button type="button" @click="aberto = !aberto" :aria-expanded="aberto"
+              class="w-full flex items-center gap-2.5 mb-5 text-left lg:cursor-default">
+        <div class="w-8 h-8 rounded-lg bg-elevated flex items-center justify-center text-accent shrink-0">
           <i data-lucide="{{ categoria.icone }}" class="w-4 h-4"></i>
         </div>
         <h2 class="font-display text-xl font-semibold text-ink">{{ categoria.nome }}</h2>
-      </div>
+        <span class="text-xs font-medium text-ink-faint">{{ categoria.itens | length }}</span>
+        <span class="ml-auto lg:hidden text-ink-faint transition-transform duration-200" :class="{ 'rotate-180': aberto }">
+          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </span>
+      </button>
 
       <!-- Bento grid: o primeiro item de cada categoria ganha um bloco
            grande (destaque editorial de verdade, não só "primeiro da
            lista"), o resto varia entre largo e estreito — de propósito
-           NUNCA uma grade uniforme de caixinhas idênticas. -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[minmax(11rem,auto)]">
+           NUNCA uma grade uniforme de caixinhas idênticas.
+
+           Acordeão mobile: classe "max-lg:hidden" já nasce no HTML pra
+           categorias fechadas (evita flash de conteúdo aberto antes do
+           Alpine hidratar — mesma preocupação de FOUC que o menu mobile
+           já resolve com style="display:none" hardcoded); :class com
+           sintaxe de objeto só ADICIONA/REMOVE essa classe conforme
+           `aberto`, nunca mexe nas outras (grid/lg:grid-cols-4/etc). -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[minmax(11rem,auto)]{{ ' max-lg:hidden' if not loop.first else '' }}"
+           :class="{ 'max-lg:hidden': !aberto }">
         {% for item in categoria.itens %}
           {% set destaque = loop.first %}
           {% set larga = (loop.index0 % 3 == 1) and not destaque %}

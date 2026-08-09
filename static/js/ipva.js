@@ -28,4 +28,5 @@ document.getElementById("btn-calcular").addEventListener("click", () => {
   document.getElementById("r-isento-aviso").classList.toggle("hidden", !isento);
 
   revelarResultado(document.getElementById("resultado"), document.getElementById("placeholder-resultado"));
+  registrarNoDashboard("IPVA", "ipva.html", `Veículo ${formatarBRL(valorVeiculo)}: IPVA de ${formatarBRL(ipva)}`);
 });

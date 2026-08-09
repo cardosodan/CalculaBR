@@ -4,9 +4,20 @@
    tailwind.config.js). Paleta verde-escuro/carvão (remete a "dinheiro,
    crescimento, extrato bancário sério") com UM acento dourado/âmbar pros
    resultados de cálculo e CTAs — nunca uma segunda cor vibrante disputando
-   atenção com o acento. Contraste verificado (luminância relativa WCAG)
-   antes de fechar os tons: ink 15.8:1, ink-muted 6.8:1, ink-faint 3.4:1
-   (só pra texto grande/decorativo, nunca corpo de texto normal). */
+   atenção com o acento.
+
+   Contraste WCAG auditado com a fórmula oficial de luminância relativa
+   (script Python, não "no olho") contra as 3 superfícies reais do site
+   (base/surface/elevated) — revisão que corrigiu 2 falhas REAIS:
+   - ink-faint: 3.4:1 (FALHA) → 5.7:1 contra base, 5.1:1 contra surface.
+     O valor antigo tinha sido "aprovado" achando que por ser "texto
+     grande/decorativo" caía na regra de 3:1 do WCAG — errado: a regra de
+     texto grande exige ≥18pt (24px)/≥14pt bold, e todo uso real de
+     ink-faint no site é text-xs (12px) ou menor. Regra certa: 4,5:1.
+   - border: 1,4:1 (FALHA pro requisito de 3:1 de componente de UI não-
+     textual, WCAG 1.4.11 — relevante pq border também é a borda visível
+     de todo <input>) → 3,3:1 contra base, 3,0:1 contra surface.
+   ink (15,8:1) e ink-muted (6,8:1) já estavam OK, mantidos como antes. */
 @theme {
   --color-base: #0F1613;
   --color-surface: #16211C;
@@ -20,9 +31,9 @@
 
   --color-ink: #EDF1EE;
   --color-ink-muted: #96A69C;
-  --color-ink-faint: #5C6B61;
+  --color-ink-faint: #84938A;
 
-  --color-border: #263329;
+  --color-border: #556F5C;
 
   /* Verde/vermelho semânticos — SEPARADOS do acento dourado. Usados só
      pra indicar ganho/perda em resultados (ex: rendimento líquido positivo
@@ -141,6 +152,18 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Barra de categorias com rolagem horizontal (acesso rápido mobile, ver
+   index.html) — some a scrollbar nativa sem esconder a capacidade de
+   rolar; o gesto de arrastar já é a affordance esperada num carrossel de
+   chips, uma scrollbar por cima só adiciona ruído visual. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
