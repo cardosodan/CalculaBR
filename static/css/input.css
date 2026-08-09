@@ -100,47 +100,49 @@ button:active:not(:disabled), .btn-like:active {
   opacity: 1;
 }
 
-/* "Recibo" interativo do hero da home — de propósito o oposto de um card
-   arredondado: borda SERRILHADA (papel de nota fiscal/cupom, via
-   background gradients formando triangulozinhos, não clip-path — mais
-   barato e não corta o conteúdo se a altura mudar). Ver index.html pro
-   porquê (evitar o molde "card arredondado + badge flutuante" repetido
-   noutro site do mesmo autor). */
-.recibo {
-  position: relative;
-  --serra-tam: 14px;
-}
-.recibo::before,
-.recibo::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 8px;
-  background-image:
-    linear-gradient(135deg, var(--color-base) 50%, transparent 50%),
-    linear-gradient(-135deg, var(--color-base) 50%, transparent 50%);
-  background-size: var(--serra-tam) 16px;
-  background-repeat: repeat-x;
-}
-.recibo::before { top: -8px; background-position: bottom left; }
-.recibo::after { bottom: -8px; background-position: top left; }
+/* Home v3 — a home inteira é desenhada como UM extrato/ledger contínuo
+   (ver comentário grande em index.html pro raciocínio: 3ª reclamação do
+   usuário de que a página tava "muito padrão", desta vez pedindo refazer
+   a página inteira — as 2 rodadas anteriores só reagrupavam o mesmo
+   vocabulário "hero com card + grid de cartões arredondados"). Os 2
+   componentes abaixo são o vocabulário novo, ambos usados do topo ao
+   rodapé da página (widget do hero E cada linha de calculadora):
 
-/* Faixa de confiança da home (marquee horizontal contínuo) — os dois
-   grupos de itens (ver index.html, renderizados 2x) somam exatamente
-   100% da largura do track, então a animação desloca -50% e o loop fecha
-   sem nenhum salto/costura visível. */
-@keyframes marquee-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+   .leader — "linha pontilhada" de fatura/menu impresso, conectando um
+   rótulo a um valor (ex.: "INSS ‥‥‥‥‥‥ R$ 248,60"). Sempre dentro de um
+   flex row com items-baseline; o translateY sobe o traço até perto da
+   linha de base do texto em vez de ficar solto no meio da caixa. */
+.leader {
+  flex: 1 1 auto;
+  min-width: 1rem;
+  align-self: flex-end;
+  margin-bottom: 0.4em;
+  border-bottom: 2px dotted var(--color-border);
+  opacity: 0.7;
 }
-.marquee-track {
-  width: max-content;
-  animation: marquee-scroll 26s linear infinite;
+
+/* .stamp — "carimbo" de autenticação de documento oficial, substitui a
+   faixa de confiança em marquee da rodada anterior (técnica de marketing
+   genérica demais pro tom "extrato bancário sério" do resto da página).
+   Retangular (nunca rounded-full — evitar reintroduzir o molde de badge
+   pill removido do topo do hero), borda tracejada, leve rotação
+   alternada por posição pra imitar a imperfeição de um carimbo de
+   borracha de verdade. */
+.stamp {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+  border: 1.5px dashed var(--color-border);
+  border-radius: 3px;
+  padding: 0.45rem 0.85rem;
+  white-space: nowrap;
 }
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
-}
+.stamp:nth-child(1) { transform: rotate(-1.5deg); }
+.stamp:nth-child(2) { transform: rotate(1deg); }
+.stamp:nth-child(3) { transform: rotate(-1deg); }
+.stamp:nth-child(4) { transform: rotate(1.5deg); }
 
 /* Input numérico sem as setinhas de incremento nativas do navegador — nesta
    UI cada campo já tem prefixo "R$"/sufixo "%" desenhado, as setinhas do

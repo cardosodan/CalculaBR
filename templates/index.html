@@ -1,55 +1,63 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section id="hero-home" class="max-w-6xl mx-auto px-4 sm:px-6 pt-14 pb-16">
-  <div class="grid lg:grid-cols-5 gap-10 lg:gap-14 items-start">
-    <div class="lg:col-span-3">
-      <p class="hero-home__item inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent bg-elevated border border-border rounded-full px-3 py-1.5">
-        <span class="relative flex w-1.5 h-1.5">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60"></span>
-          <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
-        </span>
-        18 calculadoras · grátis · sem cadastro
-      </p>
-      <h1 class="hero-home__item font-display text-5xl sm:text-[3.75rem] font-extrabold text-ink mt-5 leading-[1.04] text-balance">
-        Faça as contas
-        <br>que <span class="text-accent">todo</span> brasileiro
-        <br>precisa fazer.
+<!-- REDESIGN COMPLETO da home (pedido explícito do usuário: "o landing
+     page ainda esta muito padrao... EU QUERO QUE REFAÇA TODA A PAGINA
+     INICIAL" — terceira reclamação de genericidade nesta mesma página).
+     As duas rodadas anteriores mudaram COMPOSIÇÃO (hero assimétrico,
+     bento grid) mas mantiveram a GRAMÁTICA visual padrão de landing page
+     (hero com badge+título+card, grid de cartões arredondados). Esta
+     rodada troca a gramática inteira: a home inteira é desenhada como um
+     ÚNICO EXTRATO/LEDGER contínuo — o objeto mais característico do
+     mundo de "calculadora financeira brasileira" (extrato bancário,
+     holerite, nota fiscal), não um "produto sendo vendido". Por isso:
+     zero cartão arredondado, zero grid uniforme — cada calculadora é uma
+     LINHA numerada de lançamento com "leader" pontilhado (mesmo recurso
+     tipográfico de menu/fatura impressa), separadores em regra dupla
+     (convenção de contabilidade pra subtotal), carimbos em vez de
+     marquee de marketing. Ver input.css pros componentes novos
+     (.leader, .stamp) e README pro raciocínio completo. -->
+<section id="hero-home" class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-10">
+  <div class="hero-home__item flex items-center justify-between gap-4 pb-4 mb-8 border-b-[3px] border-double border-border">
+    <span class="font-numeros text-[11px] tracking-[0.15em] text-ink-faint uppercase">CalculaBR · Extrato Nº 2026/08</span>
+    <span class="font-numeros text-[11px] tracking-[0.15em] text-ink-faint uppercase hidden sm:inline">18 lançamentos ativos</span>
+  </div>
+
+  <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+    <div class="lg:col-span-7">
+      <p class="hero-home__item font-numeros text-[11px] tracking-[0.2em] text-accent uppercase mb-3">Assunto</p>
+      <h1 class="hero-home__item font-display text-4xl sm:text-5xl font-extrabold text-ink leading-[1.1] text-balance">
+        As contas que todo brasileiro precisa fazer, <span class="text-accent">organizadas num extrato só.</span>
       </h1>
-      <p class="hero-home__item mt-6 text-ink-muted max-w-md text-base sm:text-lg">
+      <p class="hero-home__item mt-5 text-ink-muted max-w-lg text-base sm:text-lg">
         Trabalhista, tributário, crédito e investimentos — direto no
         navegador, sem enviar nenhum dado pra lugar nenhum.
       </p>
 
       <div class="hero-home__item mt-8 max-w-md" x-data="{ busca: '' }">
+        <label class="block font-numeros text-[10px] tracking-[0.15em] text-ink-faint uppercase mb-2">Buscar lançamento</label>
         <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 text-ink-faint absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-          <input x-model="busca" type="text" placeholder="Buscar uma calculadora… (ex: 13º, IPVA, consignado)"
-                 class="w-full bg-surface border border-border rounded-full pl-10 pr-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+          <i data-lucide="search" class="w-4 h-4 text-ink-faint absolute left-0 top-1/2 -translate-y-1/2"></i>
+          <input x-model="busca" type="text" placeholder="ex.: 13º, IPVA, consignado…"
+                 class="w-full bg-transparent border-0 border-b border-border pl-6 pr-2 py-2 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:border-accent">
         </div>
         <template x-if="busca.trim() !== ''">
-          <div class="mt-2 bg-surface border border-border rounded-2xl overflow-hidden text-left divide-y divide-border">
+          <div class="mt-2 bg-surface border border-border text-left divide-y divide-border">
             <template x-for="item in window.CALCULADORAS.filter(c => (c.label + ' ' + c.categoria).toLowerCase().includes(busca.toLowerCase()))" :key="item.href">
-              <a :href="'/' + item.href" class="flex items-center justify-between px-4 py-2.5 hover:bg-elevated transition-colors">
+              <a :href="'/' + item.href" class="flex items-center justify-between px-4 py-2.5 hover:bg-elevated transition-colors font-numeros">
                 <span class="text-sm text-ink" x-text="item.label"></span>
                 <span class="text-xs text-ink-faint" x-text="item.categoria"></span>
               </a>
             </template>
             <p x-show="window.CALCULADORAS.filter(c => (c.label + ' ' + c.categoria).toLowerCase().includes(busca.toLowerCase())).length === 0"
-               class="px-4 py-3 text-sm text-ink-faint">Nenhuma calculadora encontrada.</p>
+               class="px-4 py-3 text-sm text-ink-faint">Nenhum lançamento encontrado.</p>
           </div>
         </template>
       </div>
 
-      <!-- Chamadas para ação: a busca acima já é a via rápida "eu sei o
-           que quero"; estas duas são pra quem prefere navegar — uma pro
-           catálogo (mesma âncora dos chips de acesso rápido mobile) e
-           uma pro histórico local. De propósito discretas (texto +
-           ícone, não outro botão preenchido do tamanho da busca), pra
-           não competir com ela. -->
-      <div class="hero-home__item mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+      <div class="hero-home__item mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
         <a href="#cat-trabalhista" class="inline-flex items-center gap-1.5 font-medium text-ink hover:text-accent transition-colors">
-          Ver as 18 calculadoras <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
+          Ver o extrato completo <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
         </a>
         <a href="/meus-calculos.html" class="inline-flex items-center gap-1.5 text-ink-faint hover:text-accent transition-colors">
           <i data-lucide="history" class="w-3.5 h-3.5"></i> Meus Cálculos
@@ -57,150 +65,137 @@
       </div>
     </div>
 
-    <!-- "Recibo" interativo — de propósito NADA de card arredondado com
-         badge flutuante (esse é o molde genérico repetido; ver nota em
-         README). Um recibo de papel (borda serrilhada via CSS, sem
-         cantos arredondados, divisores tracejados, tudo monoespaçado) é
-         uma metáfora só desse site (calculadora ↔ nota fiscal) e, ao
-         contrário do "visor" antigo (só decorativo), esse é
-         FUNCIONAL: o campo é um input de verdade, recalcula ao vivo
-         usando calcularDescontoINSS/calcularIRRFMensal (as mesmas
-         funções da calculadora de Salário Líquido de verdade). -->
-    <div class="hero-home__item lg:col-span-2">
-      <div id="recibo-hero" class="recibo bg-elevated px-6 py-8 font-numeros text-sm">
-        <p class="text-center text-ink-faint text-xs tracking-[0.2em]">CALCULABR</p>
-        <p class="text-center text-ink-faint text-[10px] tracking-widest mt-0.5">EXPERIMENTE AGORA</p>
-        <div class="border-t border-dashed border-border mt-4 pt-4">
-          <label for="recibo-salario" class="block text-ink-faint text-xs mb-1.5">SALÁRIO BRUTO</label>
-          <div class="relative">
-            <span class="absolute left-0 top-1/2 -translate-y-1/2 text-ink-faint">R$</span>
-            <input id="recibo-salario" type="text" inputmode="decimal" value="3000"
-                   class="w-full bg-transparent border-0 border-b border-border pl-8 pb-1.5 text-lg text-ink font-bold focus:outline-none focus:border-accent">
+    <!-- Widget ao vivo: substitui o "recibo" da rodada anterior (borda
+         serrilhada isolada não combinava mais com a página inteira agora
+         sendo um extrato só) — mesmo princípio FUNCIONAL de antes
+         (calcula de verdade, calcularDescontoINSS/calcularIRRFMensal),
+         mas usando o MESMO vocabulário de "leader" pontilhado que every
+         linha do extrato abaixo usa — a página inteira fala uma língua
+         visual só, do topo ao rodapé. -->
+    <div class="hero-home__item lg:col-span-5">
+      <div class="border border-border bg-surface">
+        <div class="flex items-center justify-between px-5 py-3 border-b border-border bg-elevated">
+          <span class="font-numeros text-[10px] tracking-[0.15em] text-ink-faint uppercase">Lançamento 001 · ao vivo</span>
+          <span class="relative flex w-1.5 h-1.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60"></span>
+            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
+          </span>
+        </div>
+        <div class="px-5 py-5">
+          <p class="font-display text-lg font-bold text-ink mb-4">Salário Líquido</p>
+          <label for="ledger-salario" class="block font-numeros text-[10px] tracking-[0.15em] text-ink-faint uppercase mb-1.5">Salário bruto</label>
+          <div class="relative mb-5">
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 text-ink-faint font-numeros text-sm">R$</span>
+            <input id="ledger-salario" type="text" inputmode="decimal" value="3000"
+                   class="w-full bg-transparent border-0 border-b border-border pl-8 pb-1.5 text-lg text-ink font-bold font-numeros focus:outline-none focus:border-accent">
+          </div>
+          <div class="space-y-2.5 font-numeros text-sm">
+            <div class="flex items-baseline gap-2">
+              <span class="text-ink-muted shrink-0">INSS</span>
+              <span class="leader"></span>
+              <span id="ledger-inss" class="text-ink-muted shrink-0">—</span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-ink-muted shrink-0">IRRF</span>
+              <span class="leader"></span>
+              <span id="ledger-irrf" class="text-ink-muted shrink-0">—</span>
+            </div>
+            <div class="flex items-baseline gap-2 pt-3 border-t-[3px] border-double border-border">
+              <span class="text-ink-faint text-xs uppercase tracking-wide shrink-0">Líquido</span>
+              <span class="leader"></span>
+              <span id="ledger-liquido" class="text-accent text-xl font-bold shrink-0">—</span>
+            </div>
           </div>
         </div>
-        <div class="border-t border-dashed border-border mt-4 pt-4 space-y-2 text-ink-muted">
-          <div class="flex justify-between"><span>INSS</span><span id="recibo-inss">—</span></div>
-          <div class="flex justify-between"><span>IRRF</span><span id="recibo-irrf">—</span></div>
-        </div>
-        <div class="border-t border-dashed border-border mt-4 pt-4 flex justify-between items-baseline">
-          <span class="text-ink-faint text-xs">LÍQUIDO</span>
-          <span id="recibo-liquido" class="text-2xl font-bold text-accent">—</span>
-        </div>
       </div>
-      <p class="text-xs text-ink-faint text-center mt-3">
-        Cálculo real, ao vivo — a mesma conta de <a href="/salario-liquido.html" class="underline hover:text-accent">Salário Líquido</a>, só que aqui já de cara.
+      <p class="text-xs text-ink-faint mt-3">
+        Cálculo real — a mesma conta de <a href="/salario-liquido.html" class="underline hover:text-accent">Salário Líquido</a>, já de cara.
       </p>
     </div>
   </div>
 </section>
 
-<!-- Faixa de confiança — quebra o padrão "hero + grid" com uma marquee
-     horizontal (técnica popular em landing pages "premium", nunca usada
-     nas páginas internas pra não virar ruído repetitivo). -->
-<div class="border-y border-border bg-surface overflow-hidden">
-  <div class="marquee-track flex items-center gap-12 py-4 whitespace-nowrap">
-    {% for _ in range(2) %}
-      <div class="flex items-center gap-12 shrink-0">
-        <span class="flex items-center gap-2 text-sm text-ink-muted"><i data-lucide="shield-check" class="w-4 h-4 text-accent"></i>Tabelas oficiais conferidas em {{ verificado_em }}</span>
-        <span class="flex items-center gap-2 text-sm text-ink-muted"><i data-lucide="lock" class="w-4 h-4 text-accent"></i>Nenhum dado sai do seu navegador</span>
-        <span class="flex items-center gap-2 text-sm text-ink-muted"><i data-lucide="ban" class="w-4 h-4 text-accent"></i>Sem cadastro, sem cartão, sem pegadinha</span>
-        <span class="flex items-center gap-2 text-sm text-ink-muted"><i data-lucide="calculator" class="w-4 h-4 text-accent"></i>18 calculadoras em 4 áreas</span>
-      </div>
-    {% endfor %}
+<!-- Carimbos de confiança — substitui o marquee de marketing da rodada
+     anterior. Documentos oficiais brasileiros são autenticados por
+     carimbo, não por uma faixa de logos rolando; cada selo é retangular,
+     borda tracejada e ligeiramente rotacionado (imperfeição de carimbo
+     de verdade), nunca um pill arredondado (evita reintroduzir o molde
+     "badge" que a rodada anterior já tinha removido do topo do hero). -->
+<div class="border-y border-border bg-surface">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-7 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+    <span class="stamp">Tabelas conferidas · {{ verificado_em }}</span>
+    <span class="stamp">100% no navegador</span>
+    <span class="stamp">Sem cadastro, sem cartão</span>
+    <span class="stamp">18 ferramentas · 4 áreas</span>
   </div>
 </div>
 
-<!-- Acesso rápido por categoria — só mobile (desktop já tem os dropdowns
-     do header + as 4 seções cabem numa rolada só de scroll normal). Mesmo
-     padrão "chips de categoria" que apps de e-commerce usam pra deixar
-     catálogos grandes navegáveis sem rolar a lista inteira às cegas —
-     aqui viram âncora direto pra seção (id="cat-{slug}" abaixo), não um
-     filtro de verdade (não tem o que filtrar além de mostrar/esconder). -->
+<!-- Abas de acesso rápido — só mobile (desktop lê o extrato inteiro
+     rolando normal). Numeração 01/02/03/04 ecoa a mesma numeração dos
+     cabeçalhos de seção abaixo — a barra já "sumariza" o índice do
+     extrato antes de rolar até ele. -->
 <div class="lg:hidden sticky top-16 z-30 bg-base/95 backdrop-blur border-b border-border">
-  <div class="no-scrollbar flex items-center gap-2 overflow-x-auto px-4 py-3">
+  <div class="no-scrollbar flex items-stretch overflow-x-auto px-2">
     {% for categoria in categorias_nav %}
       <a href="#cat-{{ categoria.slug }}"
-         class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium bg-elevated text-ink-muted border border-border active:scale-95 transition-transform">
-        <i data-lucide="{{ categoria.icone }}" class="w-3.5 h-3.5"></i>
-        {{ categoria.nome }}
+         class="shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 border-b-2 border-transparent hover:border-accent text-ink-faint hover:text-accent font-numeros text-[10px] tracking-widest uppercase transition-colors">
+        <span>{{ "%02d"|format(loop.index) }}</span>
+        <span>{{ categoria.nome }}</span>
       </a>
     {% endfor %}
   </div>
 </div>
 
-<section class="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-16">
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-14">
   {% for categoria in categorias_nav %}
-    <div id="cat-{{ categoria.slug }}" class="categoria-home scroll-mt-32" x-data="{ aberto: {{ 'true' if loop.first else 'false' }} }">
-      <!-- No mobile isso é um acordeão de verdade (só a 1ª categoria
-           começa aberta — 18 itens de cara é fricção, não conversão); no
-           desktop o botão continua clicável mas sem efeito nenhum, porque
-           o grid abaixo força "lg:grid" independente de `aberto`
-           (max-lg:hidden só existe como regra de mídia até 1023px, nunca
-           briga com lg:grid). -->
+    <div id="cat-{{ categoria.slug }}" class="ledger-section scroll-mt-32{{ ' mt-14' if not loop.first else '' }}" x-data="{ aberto: {{ 'true' if loop.first else 'false' }} }">
       <button type="button" @click="aberto = !aberto" :aria-expanded="aberto"
-              class="w-full flex items-center gap-2.5 mb-5 text-left lg:cursor-default">
-        <div class="w-8 h-8 rounded-lg bg-elevated flex items-center justify-center text-accent shrink-0">
-          <i data-lucide="{{ categoria.icone }}" class="w-4 h-4"></i>
+              class="w-full flex items-end justify-between gap-4 pb-3 border-b-[3px] border-double border-border text-left lg:cursor-default">
+        <div class="flex items-baseline gap-3">
+          <span class="font-numeros text-sm text-accent">{{ "%02d"|format(loop.index) }}</span>
+          <h2 class="font-display text-xl font-bold text-ink">{{ categoria.nome }}</h2>
         </div>
-        <h2 class="font-display text-xl font-semibold text-ink">{{ categoria.nome }}</h2>
-        <span class="text-xs font-medium text-ink-faint">{{ categoria.itens | length }}</span>
-        <span class="ml-auto lg:hidden text-ink-faint transition-transform duration-200" :class="{ 'rotate-180': aberto }">
-          <i data-lucide="chevron-down" class="w-4 h-4"></i>
-        </span>
+        <div class="flex items-center gap-3">
+          <span class="font-numeros text-xs text-ink-faint hidden sm:inline">{{ categoria.itens | length }} lançamentos</span>
+          <span class="lg:hidden text-ink-faint transition-transform duration-200" :class="{ 'rotate-180': aberto }">
+            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </span>
+        </div>
       </button>
 
-      <!-- Bento grid: o primeiro item de cada categoria ganha um bloco
-           grande (destaque editorial de verdade, não só "primeiro da
-           lista"), o resto varia entre largo e estreito — de propósito
-           NUNCA uma grade uniforme de caixinhas idênticas.
-
-           Acordeão mobile: classe "max-lg:hidden" já nasce no HTML pra
-           categorias fechadas (evita flash de conteúdo aberto antes do
-           Alpine hidratar — mesma preocupação de FOUC que o menu mobile
-           já resolve com style="display:none" hardcoded); :class com
-           sintaxe de objeto só ADICIONA/REMOVE essa classe conforme
-           `aberto`, nunca mexe nas outras (grid/lg:grid-cols-4/etc). -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[minmax(11rem,auto)]{{ ' max-lg:hidden' if not loop.first else '' }}"
-           :class="{ 'max-lg:hidden': !aberto }">
+      <!-- Acordeão mobile: mesmo padrão seguro já validado na rodada
+           anterior — a classe "max-lg:hidden" já nasce certa no HTML
+           (evita flash antes do Alpine hidratar) e o :class de sintaxe
+           de OBJETO só adiciona/remove essa classe, nunca briga com
+           "divide-y"/etc. -->
+      <div class="divide-y divide-border{{ ' max-lg:hidden' if not loop.first else '' }}" :class="{ 'max-lg:hidden': !aberto }">
         {% for item in categoria.itens %}
           {% set destaque = loop.first %}
-          {% set larga = (loop.index0 % 3 == 1) and not destaque %}
-          {% set largura_destaque = 'col-span-4' if categoria.itens | length == 1 else 'col-span-2' %}
           <a href="/{{ item.href }}"
-             class="group spotlight cartao-home relative overflow-hidden bg-surface border border-border rounded-2xl hover:border-accent/40 hover:-translate-y-1 transition-all duration-150 flex items-center
-                    {{ (largura_destaque + ' p-7') if destaque else 'p-5 flex-col items-stretch justify-between' }}
-                    {{ 'col-span-2' if larga else '' }}">
-            {% if destaque %}
-              <i data-lucide="{{ item.icone }}" class="absolute -right-5 -bottom-5 w-32 h-32 text-ink opacity-[0.05] group-hover:opacity-[0.08] transition-opacity" stroke-width="1"></i>
-              <div class="relative flex items-center gap-5">
-                <div class="w-14 h-14 shrink-0 rounded-2xl bg-elevated flex items-center justify-center text-accent">
-                  <i data-lucide="{{ item.icone }}" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <p class="font-display text-xl font-semibold text-ink group-hover:text-accent transition-colors">{{ item.label }}</p>
-                  <p class="mt-1 text-sm text-ink-muted">{{ item.desc }}</p>
-                </div>
-                <span class="ml-auto shrink-0 hidden sm:inline-flex items-center gap-1 text-xs font-medium text-ink-faint group-hover:text-accent transition-colors">
-                  Calcular <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-0.5 transition-transform"></i>
-                </span>
-              </div>
-            {% else %}
-              <div>
-                <div class="w-10 h-10 rounded-xl bg-elevated flex items-center justify-center text-accent mb-3.5">
-                  <i data-lucide="{{ item.icone }}" class="w-4.5 h-4.5"></i>
-                </div>
-                <p class="font-display text-base font-semibold text-ink group-hover:text-accent transition-colors">{{ item.label }}</p>
-                <p class="mt-1.5 text-sm text-ink-muted line-clamp-2">{{ item.desc }}</p>
-              </div>
-              <span class="mt-4 inline-flex items-center gap-1 text-xs font-medium text-ink-faint group-hover:text-accent transition-colors">
-                Calcular <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-0.5 transition-transform"></i>
-              </span>
-            {% endif %}
+             class="ledger-row group flex items-center gap-3 sm:gap-4 py-4 sm:py-5 -mx-4 px-4 sm:-mx-6 sm:px-6 hover:bg-elevated/60 transition-colors {{ 'bg-elevated/35' if destaque else '' }}">
+            <span class="font-numeros text-xs w-7 shrink-0 {{ 'text-accent' if destaque else 'text-ink-faint' }}">{{ "%03d"|format(loop.index) }}</span>
+            <i data-lucide="{{ item.icone }}" class="w-4 h-4 text-accent shrink-0 hidden sm:block"></i>
+            <div class="min-w-0 flex-1">
+              <p class="font-display font-semibold text-ink group-hover:text-accent transition-colors {{ 'text-lg' if destaque else 'text-sm' }}">{{ item.label }}</p>
+              <p class="text-xs text-ink-muted mt-0.5 line-clamp-1 sm:line-clamp-none">{{ item.desc }}</p>
+            </div>
+            <span class="leader hidden sm:block"></span>
+            <span class="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-ink-faint group-hover:text-accent transition-colors font-numeros">
+              calcular <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-0.5 transition-transform"></i>
+            </span>
           </a>
         {% endfor %}
       </div>
     </div>
   {% endfor %}
+
+  <!-- Linha de total — fecha o extrato como uma planilha fecha uma
+       coluna de subtotal, regra dupla por cima (mesma convenção contábil
+       usada nos cabeçalhos de seção e no widget ao vivo). -->
+  <div class="mt-14 pt-4 border-t-[3px] border-double border-border flex flex-wrap items-baseline justify-between gap-3">
+    <span class="font-numeros text-xs text-ink-faint uppercase tracking-wide">Total do extrato</span>
+    <span class="font-numeros text-sm text-ink">18 calculadoras · 4 áreas · <span class="text-accent font-bold">R$ 0,00</span> cobrados</span>
+  </div>
 </section>
 {% endblock %}
 
@@ -218,15 +213,15 @@
     {% endfor %}
   ];
 
-  // Recibo interativo do hero: recalcula ao vivo a cada tecla digitada,
-  // reaproveitando as mesmas funções da calculadora de Salário Líquido
-  // de verdade (calcularDescontoINSS/calcularIRRFMensal, common.js) —
-  // funcional, não só decorativo.
-  (function iniciarReciboHero() {
-    const input = document.getElementById("recibo-salario");
-    const elInss = document.getElementById("recibo-inss");
-    const elIrrf = document.getElementById("recibo-irrf");
-    const elLiquido = document.getElementById("recibo-liquido");
+  // Widget "Lançamento 001" do hero: recalcula ao vivo a cada tecla
+  // digitada, reaproveitando as mesmas funções da calculadora de Salário
+  // Líquido de verdade (calcularDescontoINSS/calcularIRRFMensal,
+  // common.js) — funcional, não só decorativo.
+  (function iniciarWidgetAoVivo() {
+    const input = document.getElementById("ledger-salario");
+    const elInss = document.getElementById("ledger-inss");
+    const elIrrf = document.getElementById("ledger-irrf");
+    const elLiquido = document.getElementById("ledger-liquido");
     if (!input) return;
 
     function recalcular() {
@@ -246,30 +241,27 @@
     recalcular();
   })();
 
-  // Entrada da home: hero em cascata, depois cada seção de categoria ao
-  // rolar (ScrollTrigger — a home é longa, não cabe tudo na tela de
+  // Entrada da home: hero em cascata, depois cada linha de lançamento ao
+  // rolar (ScrollTrigger — o extrato é longo, não cabe tudo na tela de
   // largada). animarEntradaEmLote já inclui a rede de segurança que
   // garante tudo visível mesmo se o tween travar.
   animarEntradaEmLote(document.querySelectorAll("#hero-home .hero-home__item"), { y: 18, duration: 0.7, stagger: 0.1 });
 
   if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     gsap.registerPlugin(ScrollTrigger);
-    document.querySelectorAll(".categoria-home").forEach((secao) => {
-      const cartoes = secao.querySelectorAll(".cartao-home");
-      gsap.set(cartoes, { opacity: 0, y: 20 });
+    document.querySelectorAll(".ledger-section").forEach((secao) => {
+      const linhas = secao.querySelectorAll(".ledger-row");
+      gsap.set(linhas, { opacity: 0, y: 14 });
 
       // BUG REAL já visto antes (mesma classe do bug em revelarResultado):
       // a rede de segurança precisa ser agendada JÁ, fora do onEnter — se
       // ficar dentro, e o ScrollTrigger nunca disparar por qualquer
-      // motivo (cálculo de posição errado, elemento nunca cruza o
-      // threshold, tela não rola de verdade), a seção inteira fica
-      // opacity:0 pra sempre. Confirmado em teste: 3 das 4 categorias
-      // sumiram assim antes desta correção.
+      // motivo, a seção inteira fica opacity:0 pra sempre.
       let finalizado = false;
       const finalizar = () => {
         if (finalizado) return;
         finalizado = true;
-        gsap.set(cartoes, { opacity: 1, y: 0 });
+        gsap.set(linhas, { opacity: 1, y: 0 });
       };
 
       ScrollTrigger.create({
@@ -279,7 +271,7 @@
         onEnter: () => {
           if (finalizado) return;
           finalizado = true;
-          gsap.to(cartoes, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: "power3.out" });
+          gsap.to(linhas, { opacity: 1, y: 0, duration: 0.45, stagger: 0.04, ease: "power3.out" });
         },
       });
       setTimeout(finalizar, 2500);

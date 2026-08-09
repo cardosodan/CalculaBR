@@ -296,6 +296,70 @@ abre/fecha corretamente, chips não geram erro, "Meus Cálculos" registra/
 remove/limpa de verdade, e as 20 páginas carregam sem erro de console em
 nenhum dos dois viewports.
 
+## Home v3 — "ainda muito padrão": a home reconstruída como um extrato, não uma landing page
+
+Terceira reclamação do usuário sobre a mesma página, desta vez sem meio-
+termo: *"o landing page ainda esta muito padrao com elementos iguais
+todos os sites que vc faz pra mim EU QUERO QUE REFAÇA TODA A PAGINA
+INICIAL"*. As duas rodadas anteriores (ver "Hero 'recibo'" acima e a
+rodada de UX logo depois) tinham mudado a COMPOSIÇÃO da home (hero
+assimétrico, bento grid de tamanhos variados) mas mantido a mesma
+GRAMÁTICA de landing page — badge no topo, título grande + parágrafo,
+grid de cartões arredondados com hover — só reorganizada. Reorganizar a
+mesma gramática visual continuava lendo como "mais um site com elementos
+padrão", mesmo com composição diferente a cada rodada.
+
+**Mudança de abordagem, não só de layout**: em vez de perguntar "como
+composição essa gramática de landing page de um jeito novo", a pergunta
+virou "qual é o objeto mais característico do mundo de uma calculadora
+financeira brasileira?" — resposta: o extrato bancário/holerite/nota
+fiscal, não uma "vitrine de produto". A home inteira foi reconstruída
+como se fosse **um único extrato contínuo**, do topo ao rodapé:
+
+- **Cabeçalho tipo carimbo de documento** ("CalculaBR · Extrato Nº
+  2026/08", regra dupla por baixo — convenção contábil de subtotal, não
+  decoração) em vez de um badge pill "18 calculadoras · grátis".
+- **Título reduzido de tamanho e reenquadrado como campo de memorando**
+  ("ASSUNTO:" + a frase) — de propósito NÃO é mais um hero gigante
+  dominando a tela; numa suíte de ferramentas utilitárias, a própria
+  interface (o extrato) é o herói, não uma promessa de marketing.
+- **Widget "Lançamento 001 · ao vivo"** substitui o antigo card "recibo"
+  de borda serrilhada — mesmo cálculo real (`calcularDescontoINSS`/
+  `calcularIRRFMensal`), mas agora falando o MESMO vocabulário visual do
+  resto da página (linhas com "leader" pontilhado ligando rótulo a
+  valor, tipo fatura/menu impresso — `.leader` em `input.css`) em vez de
+  um motivo isolado (papel serrilhado) que não se estendia ao resto da
+  home.
+- **Carimbos** (`.stamp`, retangulares, borda tracejada, rotação leve
+  alternada) substituem a faixa de confiança em marquee — autenticação
+  de documento oficial, não uma técnica de marketing genérica.
+- **Cada calculadora virou uma LINHA numerada de lançamento** (`.ledger-
+  row`) — número de 3 dígitos, ícone, label+descrição, `.leader`
+  pontilhado, "calcular →" — em vez de um cartão arredondado numa grade.
+  Zero `rounded-2xl`, zero grid uniforme de caixinhas: cada seção de
+  categoria é separada por regra dupla (mesma convenção do cabeçalho),
+  não por espaço em branco entre cards.
+- **Linha de total no rodapé** ("18 calculadoras · 4 áreas · R$ 0,00
+  cobrados", regra dupla por cima) fecha o extrato como uma planilha
+  fecha uma coluna de subtotal.
+- O acordeão/chips mobile da rodada de UX anterior foi **preservado
+  funcionalmente**, só adaptado pro novo markup (chips viraram abas
+  numeradas "01/02/03/04", ecoando a numeração dos cabeçalhos de seção
+  logo abaixo) — a lógica Alpine (`:class` de sintaxe de objeto, classe
+  inicial já correta no HTML renderizado pra evitar FOUC) não mudou.
+
+`.recibo` (borda serrilhada) e a faixa `.marquee-track` foram removidas
+de `input.css` por ficarem sem nenhum uso depois desta rodada — conferido
+por grep antes de apagar.
+
+Reteste completo com Playwright depois da reconstrução: as 20 páginas
+(mobile + desktop) continuam sem erro de console, acordeão/chips/
+dashboard continuam funcionando, e uma checagem nova (`opacity`
+computado de cada `.ledger-row` depois de rolar a página inteira)
+confirmou que nenhuma linha fica presa invisível — mesma classe de bug
+(rede de segurança do GSAP) já vista antes, agora coberta por teste
+automatizado em vez de só revisão de código.
+
 ## Escopo consciente (o que NÃO está incluído)
 
 - IRRF sobre saldo de salário/13º proporcional **dentro da rescisão**
