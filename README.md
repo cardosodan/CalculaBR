@@ -360,6 +360,58 @@ confirmou que nenhuma linha fica presa invisível — mesma classe de bug
 (rede de segurança do GSAP) já vista antes, agora coberta por teste
 automatizado em vez de só revisão de código.
 
+## Home v4 — "vc nao mudou posição de nada": trocar a decoração não basta, precisa trocar o esqueleto
+
+Usuário testou a v3 e reportou, sem meio-termo: *"FICOU UMA MERDA E VC
+NAO MUDOU POSIÇÃO DE NADA, QUERO QUE REFAÇA DIFERENTE, NAO REFAÇA
+IGUAL"*. Reexaminando a v3 com esse feedback: era verdade — trocou
+cartão→linha e marquee→carimbo (a PELE), mas manteve exatamente o mesmo
+ESQUELETO das duas rodadas anteriores: título grande à esquerda + widget
+à direita no topo (hero), faixa horizontal embaixo, pilha vertical de 4
+seções depois disso. Reorganizar decoração sem mexer na composição
+espacial continua parecendo "o mesmo site" — a lição fica registrada na
+memória do usuário pra qualquer site futuro (não só esse).
+
+**Mudança real desta vez**: não existe mais NENHUM "hero" — nem grande,
+nem pequeno, nem reenquadrado como memorando. A home virou um painel de
+duas colunas, modelo "app com sidebar", não mais "landing page com
+seções":
+
+- **Sidebar fixa à esquerda** (sticky no desktop) com a lista de 4
+  categorias — cada uma um botão, não mais um cabeçalho de seção.
+  Clicar troca a categoria ativa.
+- **Painel único à direita** mostra só os itens da categoria
+  selecionada — as outras 3 ficam fora de vista (`x-show`, transição de
+  opacidade), não empilhadas exigindo scroll pra passar por todas.
+  Reaproveita o estilo de linha numerada com leader pontilhado da v3
+  (isso não era o problema — a POSIÇÃO era), só que agora dentro do
+  painel em vez de uma seção entre várias.
+- **Barra utilitária fina no topo** (busca + um ticker compacto "simular
+  líquido", um valor só, sem breakdown de INSS/IRRF) substitui o hero —
+  ocupa uma fração da altura que o hero antigo ocupava.
+- **Mobile e desktop usam o MESMO modelo de interação** agora — a
+  sidebar vira uma fileira horizontal de botões roláveis, mas o
+  comportamento é idêntico (seleciona categoria → só ela aparece), em
+  vez de divergir (acordeão multi-aberto no mobile, grid tudo-visível no
+  desktop, como era antes). Isso eliminou toda a lógica de âncora
+  (`#cat-slug`, `scroll-mt-32`, sticky-offset) — não tem mais scroll até
+  seção nenhuma, só troca de conteúdo.
+- Animação de entrada simplificada: só um fade em cascata
+  (`.reveal-item`) na barra utilitária + sidebar + painel ao carregar a
+  página — a troca de categoria usa `x-transition` do próprio Alpine
+  (não GSAP), o que elimina de vez a classe de bug "ScrollTrigger nunca
+  dispara → fica preso invisível" pra essa parte, já que não existe mais
+  nenhum ScrollTrigger na home.
+
+`.stamp` (carimbo da v3) removido de `input.css` por ficar sem uso
+(conferido por grep). `.leader` continua — o dot-leader nunca foi o
+problema, só a posição das coisas ao redor dele.
+
+Testado de novo com Playwright: troca de categoria via sidebar
+(desktop E mobile), busca instantânea, ticker ao vivo, e o fluxo
+completo de "Meus Cálculos" — tudo funcionando, 20 páginas sem erro de
+console.
+
 ## Escopo consciente (o que NÃO está incluído)
 
 - IRRF sobre saldo de salário/13º proporcional **dentro da rescisão**

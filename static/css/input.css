@@ -100,18 +100,20 @@ button:active:not(:disabled), .btn-like:active {
   opacity: 1;
 }
 
-/* Home v3 — a home inteira é desenhada como UM extrato/ledger contínuo
-   (ver comentário grande em index.html pro raciocínio: 3ª reclamação do
-   usuário de que a página tava "muito padrão", desta vez pedindo refazer
-   a página inteira — as 2 rodadas anteriores só reagrupavam o mesmo
-   vocabulário "hero com card + grid de cartões arredondados"). Os 2
-   componentes abaixo são o vocabulário novo, ambos usados do topo ao
-   rodapé da página (widget do hero E cada linha de calculadora):
+/* Home v4 — extrato/ledger, agora como painel de índice fixo + conteúdo
+   de UMA categoria por vez (ver comentário grande em index.html: a v3
+   trocou a decoração mas manteve o mesmo esqueleto "hero no topo + pilha
+   vertical de seções" das rodadas anteriores — reclamação explícita do
+   usuário de que a POSIÇÃO de nada tinha mudado). .stamp (carimbo da v3)
+   foi removido por ficar sem uso nesta versão (checado por grep antes de
+   apagar) — a faixa de confiança virou texto simples no rodapé da
+   sidebar/página em vez de um componente decorativo à parte.
 
    .leader — "linha pontilhada" de fatura/menu impresso, conectando um
-   rótulo a um valor (ex.: "INSS ‥‥‥‥‥‥ R$ 248,60"). Sempre dentro de um
-   flex row com items-baseline; o translateY sobe o traço até perto da
-   linha de base do texto em vez de ficar solto no meio da caixa. */
+   rótulo a um valor (ex.: "INSS ‥‥‥‥‥‥ R$ 248,60") em cada linha de
+   calculadora do painel. Sempre dentro de um flex row com
+   items-baseline; o translateY sobe o traço até perto da linha de base
+   do texto em vez de ficar solto no meio da caixa. */
 .leader {
   flex: 1 1 auto;
   min-width: 1rem;
@@ -120,29 +122,6 @@ button:active:not(:disabled), .btn-like:active {
   border-bottom: 2px dotted var(--color-border);
   opacity: 0.7;
 }
-
-/* .stamp — "carimbo" de autenticação de documento oficial, substitui a
-   faixa de confiança em marquee da rodada anterior (técnica de marketing
-   genérica demais pro tom "extrato bancário sério" do resto da página).
-   Retangular (nunca rounded-full — evitar reintroduzir o molde de badge
-   pill removido do topo do hero), borda tracejada, leve rotação
-   alternada por posição pra imitar a imperfeição de um carimbo de
-   borracha de verdade. */
-.stamp {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-ink-faint);
-  border: 1.5px dashed var(--color-border);
-  border-radius: 3px;
-  padding: 0.45rem 0.85rem;
-  white-space: nowrap;
-}
-.stamp:nth-child(1) { transform: rotate(-1.5deg); }
-.stamp:nth-child(2) { transform: rotate(1deg); }
-.stamp:nth-child(3) { transform: rotate(-1deg); }
-.stamp:nth-child(4) { transform: rotate(1.5deg); }
 
 /* Input numérico sem as setinhas de incremento nativas do navegador — nesta
    UI cada campo já tem prefixo "R$"/sufixo "%" desenhado, as setinhas do
