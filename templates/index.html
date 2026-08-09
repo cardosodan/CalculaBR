@@ -15,21 +15,23 @@
      interação (selecionar categoria → ver só ela), em vez de
      acordeão-no-mobile/grid-no-desktop como antes — unifica o
      comportamento em vez de divergir por breakpoint. -->
-<div class="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-16">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pt-10 pb-24">
 
-  <div class="reveal-item flex items-center justify-between gap-4 pb-3 text-[10px] font-numeros tracking-[0.15em] text-ink-faint uppercase">
+  <div class="reveal-item flex items-center justify-between gap-4 pb-5 text-[11px] font-numeros tracking-[0.15em] text-ink-faint uppercase">
     <span>CalculaBR · Extrato Nº 2026/08</span>
     <span class="hidden sm:inline">18 lançamentos ativos</span>
   </div>
 
-  <!-- barra utilitária fina: busca + ticker ao vivo, lado a lado — NÃO é
-       mais um hero (sem título gigante, sem card decorativo). -->
-  <div class="reveal-item flex flex-col sm:flex-row gap-3 sm:items-center sm:gap-6 pb-6 border-b border-border">
+  <!-- barra utilitária: busca + ticker ao vivo, lado a lado — NÃO é mais
+       um hero (sem título gigante, sem card decorativo), mas com espaço
+       de verdade ao redor (rodada anterior ficou espremida demais —
+       "AGORA FICOU COMPRIMIDO DEMAIS" — reposicionar sem sufocar). -->
+  <div class="reveal-item flex flex-col sm:flex-row gap-4 sm:items-center sm:gap-8 pb-8 border-b border-border">
     <div class="sm:flex-1" x-data="{ busca: '' }">
       <div class="relative max-w-md">
         <i data-lucide="search" class="w-4 h-4 text-ink-faint absolute left-0 top-1/2 -translate-y-1/2"></i>
         <input x-model="busca" type="text" placeholder="Buscar uma calculadora… (ex.: 13º, IPVA, consignado)"
-               class="w-full bg-transparent border-0 border-b border-border pl-6 pr-2 py-2 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:border-accent">
+               class="w-full bg-transparent border-0 border-b border-border pl-6 pr-2 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:border-accent">
       </div>
       <template x-if="busca.trim() !== ''">
         <div id="resultado-busca-home" class="mt-2 max-w-md bg-surface border border-border text-left divide-y divide-border relative z-20">
@@ -45,13 +47,13 @@
       </template>
     </div>
 
-    <div class="flex items-center gap-2.5 font-numeros text-sm bg-surface border border-border px-3.5 py-2 shrink-0">
+    <div class="flex items-center gap-3 font-numeros text-sm bg-surface border border-border px-5 py-3 shrink-0">
       <span class="text-ink-faint text-[10px] uppercase tracking-wide hidden md:inline">Simular líquido</span>
       <span class="text-ink-faint">R$</span>
       <input id="ticker-salario" type="text" inputmode="decimal" value="3000"
-             class="w-16 bg-transparent border-0 border-b border-border text-ink font-bold text-right focus:outline-none focus:border-accent">
+             class="w-20 bg-transparent border-0 border-b border-border text-ink font-bold text-right focus:outline-none focus:border-accent">
       <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-ink-faint shrink-0"></i>
-      <span id="ticker-liquido" class="text-accent font-bold shrink-0">—</span>
+      <span id="ticker-liquido" class="text-accent font-bold text-base shrink-0">—</span>
     </div>
   </div>
 
@@ -65,29 +67,29 @@
        mesma prevenção de FOUC de sempre, só que aplicada a x-show em vez
        de classe Tailwind (o :class do acordeão anterior não existe mais
        porque o acordeão em si não existe mais). -->
-  <div class="mt-8 lg:grid lg:grid-cols-[240px_1fr] lg:gap-12" x-data="{ categoriaAtiva: '{{ categorias_nav[0].slug }}' }">
+  <div class="mt-10 lg:grid lg:grid-cols-[260px_1fr] lg:gap-16" x-data="{ categoriaAtiva: '{{ categorias_nav[0].slug }}' }">
 
-    <aside class="reveal-item mb-7 lg:mb-0 lg:sticky lg:top-24 lg:self-start">
-      <p class="font-display text-[1.05rem] font-bold text-ink leading-snug mb-5 text-balance">
+    <aside class="reveal-item mb-9 lg:mb-0 lg:sticky lg:top-24 lg:self-start">
+      <p class="font-display text-lg font-bold text-ink leading-relaxed mb-7 text-balance">
         As contas que todo brasileiro precisa fazer, organizadas por área.
       </p>
-      <nav class="flex lg:flex-col gap-1 -mx-1 overflow-x-auto no-scrollbar">
+      <nav class="flex lg:flex-col gap-1.5 -mx-1 overflow-x-auto no-scrollbar">
         {% for categoria in categorias_nav %}
           <button type="button" @click="categoriaAtiva = '{{ categoria.slug }}'"
-                  class="shrink-0 lg:shrink flex items-center gap-2.5 mx-1 lg:mx-0 px-3 py-2.5 text-left border-l-2 whitespace-nowrap transition-colors"
+                  class="shrink-0 lg:shrink flex items-center gap-3 mx-1 lg:mx-0 px-3.5 py-3 text-left border-l-2 whitespace-nowrap transition-colors"
                   :class="categoriaAtiva === '{{ categoria.slug }}' ? 'border-accent bg-elevated text-ink' : 'border-transparent text-ink-faint hover:text-ink hover:bg-elevated/50'">
-            <i data-lucide="{{ categoria.icone }}" class="w-4 h-4 shrink-0"></i>
+            <i data-lucide="{{ categoria.icone }}" class="w-4.5 h-4.5 shrink-0"></i>
             <span class="font-medium text-sm">{{ categoria.nome }}</span>
             <span class="font-numeros text-xs opacity-70">{{ categoria.itens | length }}</span>
           </button>
         {% endfor %}
       </nav>
 
-      <div class="hidden lg:block mt-8 pt-6 border-t border-border">
-        <p class="font-numeros text-[10px] text-ink-faint leading-relaxed">
+      <div class="hidden lg:block mt-10 pt-7 border-t border-border">
+        <p class="font-numeros text-xs text-ink-faint leading-relaxed">
           Tabelas conferidas em {{ verificado_em }}.<br>100% no navegador, sem cadastro.
         </p>
-        <a href="/meus-calculos.html" class="inline-flex items-center gap-1.5 text-xs text-ink-muted hover:text-accent transition-colors mt-3">
+        <a href="/meus-calculos.html" class="inline-flex items-center gap-1.5 text-xs text-ink-muted hover:text-accent transition-colors mt-4">
           <i data-lucide="history" class="w-3.5 h-3.5"></i> Meus Cálculos
         </a>
       </div>
@@ -97,23 +99,23 @@
       {% for categoria in categorias_nav %}
         <div class="categoria-panel" {% if not loop.first %}style="display:none;"{% endif %}
              x-show="categoriaAtiva === '{{ categoria.slug }}'" x-transition.opacity.duration.200ms>
-          <div class="flex items-baseline justify-between gap-4 pb-3 border-b-[3px] border-double border-border">
-            <h2 class="font-display text-xl font-bold text-ink">{{ categoria.nome }}</h2>
-            <span class="font-numeros text-xs text-ink-faint">{{ categoria.itens | length }} lançamentos</span>
+          <div class="flex items-baseline justify-between gap-4 pb-4 border-b-[3px] border-double border-border">
+            <h2 class="font-display text-2xl font-bold text-ink">{{ categoria.nome }}</h2>
+            <span class="font-numeros text-sm text-ink-faint">{{ categoria.itens | length }} lançamentos</span>
           </div>
           <div class="divide-y divide-border">
             {% for item in categoria.itens %}
               {% set destaque = loop.first %}
               <a href="/{{ item.href }}"
-                 class="group flex items-center gap-3 sm:gap-4 py-4 sm:py-5 -mx-4 px-4 sm:-mx-5 sm:px-5 hover:bg-elevated/60 transition-colors {{ 'bg-elevated/35' if destaque else '' }}">
-                <span class="font-numeros text-xs w-7 shrink-0 {{ 'text-accent' if destaque else 'text-ink-faint' }}">{{ "%03d"|format(loop.index) }}</span>
-                <i data-lucide="{{ item.icone }}" class="w-4 h-4 text-accent shrink-0 hidden sm:block"></i>
+                 class="group flex items-center gap-4 sm:gap-5 py-5 sm:py-6 -mx-4 px-4 sm:-mx-5 sm:px-5 hover:bg-elevated/60 transition-colors {{ 'bg-elevated/35' if destaque else '' }}">
+                <span class="font-numeros text-xs w-8 shrink-0 {{ 'text-accent' if destaque else 'text-ink-faint' }}">{{ "%03d"|format(loop.index) }}</span>
+                <i data-lucide="{{ item.icone }}" class="w-5 h-5 text-accent shrink-0 hidden sm:block"></i>
                 <div class="min-w-0 flex-1">
-                  <p class="font-display font-semibold text-ink group-hover:text-accent transition-colors {{ 'text-lg' if destaque else 'text-sm' }}">{{ item.label }}</p>
-                  <p class="text-xs text-ink-muted mt-0.5 line-clamp-1 sm:line-clamp-none">{{ item.desc }}</p>
+                  <p class="font-display font-semibold text-ink group-hover:text-accent transition-colors {{ 'text-xl' if destaque else 'text-base' }}">{{ item.label }}</p>
+                  <p class="text-sm text-ink-muted mt-1 line-clamp-1 sm:line-clamp-none">{{ item.desc }}</p>
                 </div>
                 <span class="leader hidden sm:block"></span>
-                <span class="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-ink-faint group-hover:text-accent transition-colors font-numeros">
+                <span class="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium text-ink-faint group-hover:text-accent transition-colors font-numeros">
                   calcular <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-0.5 transition-transform"></i>
                 </span>
               </a>
@@ -124,11 +126,11 @@
     </div>
   </div>
 
-  <div class="mt-14 pt-4 border-t-[3px] border-double border-border flex flex-wrap items-baseline justify-between gap-3">
+  <div class="mt-16 pt-5 border-t-[3px] border-double border-border flex flex-wrap items-baseline justify-between gap-3">
     <span class="font-numeros text-xs text-ink-faint uppercase tracking-wide">Total do extrato</span>
-    <span class="font-numeros text-sm text-ink">18 calculadoras · 4 áreas · <span class="text-accent font-bold">R$ 0,00</span> cobrados</span>
+    <span class="font-numeros text-base text-ink">18 calculadoras · 4 áreas · <span class="text-accent font-bold">R$ 0,00</span> cobrados</span>
   </div>
-  <p class="lg:hidden font-numeros text-[10px] text-ink-faint mt-3">
+  <p class="lg:hidden font-numeros text-xs text-ink-faint mt-4">
     Tabelas conferidas em {{ verificado_em }} · 100% no navegador, sem cadastro.
   </p>
 </div>

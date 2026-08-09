@@ -412,6 +412,33 @@ Testado de novo com Playwright: troca de categoria via sidebar
 completo de "Meus Cálculos" — tudo funcionando, 20 páginas sem erro de
 console.
 
+### v4.1 — "AGORA FICOU COMPRIMIDO DEMAIS"
+
+Resolver a posição (v4) veio com um efeito colateral: pra caber tudo
+numa barra utilitária fina + sidebar estreita + linhas compactas, o
+espaçamento e a tipografia ficaram apertados demais — usuário reclamou
+na hora seguinte. Ajuste **sem mexer na posição de novo** (sidebar +
+painel único continuam exatamente onde estavam, é só a densidade que
+mudou):
+
+- Wrapper geral: `pt-6 pb-16` → `pt-10 pb-24`.
+- Barra utilitária: `pb-6` → `pb-8`, `gap-6` → `gap-8`, ticker ganhou
+  padding maior (`px-3.5 py-2` → `px-5 py-3`) e o campo de valor mais
+  largo (`w-16` → `w-20`).
+- Coluna da sidebar: `240px` → `260px`, gap até o painel `gap-12` →
+  `gap-16`; tagline `text-[1.05rem]` → `text-lg` com `leading-relaxed`;
+  botões de categoria com mais padding (`py-2.5` → `py-3`) e ícone maior.
+- Cabeçalho de cada categoria: `text-xl` → `text-2xl`.
+- Cada linha de calculadora: `py-4/py-5` → `py-5/py-6`, ícone `w-4` →
+  `w-5`, label não-destaque `text-sm` → `text-base` (destaque `text-lg`
+  → `text-xl`), descrição `text-xs` → `text-sm`.
+- Linha de total: `mt-14 pt-4` → `mt-16 pt-5`, valor `text-sm` →
+  `text-base`.
+
+Reteste completo (Playwright, troca de categoria + busca + ticker +
+Meus Cálculos + 20 páginas) confirmando que nada quebrou com o aumento
+de densidade — só respiro visual a mais.
+
 ## Escopo consciente (o que NÃO está incluído)
 
 - IRRF sobre saldo de salário/13º proporcional **dentro da rescisão**
