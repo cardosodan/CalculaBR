@@ -470,6 +470,47 @@ Reteste completo de novo (Playwright): troca de categoria, busca,
 ticker, Meus Cálculos, e as 20 páginas sem erro de console — a camada
 de polimento não introduziu nenhuma regressão funcional.
 
+### v4.3 — "AS OPÇOES VOLTEM A SER BLOQUINHOS, MAS DIFERENTE DE TUDO QUE VC JA FEZ E BEM BONITO"
+
+Depois de 3 rodadas trocando linha por cartão e cartão por linha, o
+usuário fechou o pedido: quer blocos de volta, mas evitando
+explicitamente repetir o molde da v2 (bento grid, cartão arredondado
+com ícone-título-descrição-seta — a MESMA fórmula genérica que o
+usuário rejeitou lá atrás como "muito padrão"). Resposta: em vez de
+inventar mais uma variação de cartão de UI genérico, cada calculadora
+virou um **cartão financeiro de verdade** — o objeto mais bonito e
+reconhecível do próprio domínio (cartão de crédito/débito), reaproveita
+a metáfora "extrato" já estabelecida (o site inteiro é um documento
+financeiro; agora ganha o objeto irmão dele).
+
+`.cartao-financeiro` (`input.css`), dentro de um `grid grid-cols-1
+sm:grid-cols-2 gap-5` no painel (substituindo a lista de linhas
+`divide-y` da v4/v4.1/v4.2 — `.leader` foi removido por ficar sem uso):
+
+- **"Chip"** — badge do ícone com gradiente dourado metálico
+  (`from-accent to-accent-hover`), no lugar de um glifo solto ou um
+  badge plano.
+- **Número mascarado** — `•••• •••• •••• 0001`, terminando no índice do
+  item (mesmo dado que já numerava as linhas antes, reaproveitado com
+  propósito novo).
+- **Nome em caixa-alta** (`item.label | upper`) como o nome em relevo de
+  um cartão de verdade.
+- **Brilho diagonal no hover** (`.cartao-sheen`, `linear-gradient`
+  varrendo o cartão em 750ms) — luz refletindo em plástico/metal, não
+  um hover-lift genérico.
+- **`--destaque`** (1º item de cada categoria) ganha um gradiente com
+  mais um toque do acento — mais "premium", mas SEM crescer nem mudar
+  de formato em relação aos outros cartões (evita repetir o "1º item
+  vira bloco gigante" da v2).
+- Sombra em camadas (`box-shadow` externo + `inset` sutil pra
+  profundidade), borda com um toque de dourado (`color-mix` a 20% do
+  acento) em vez de borda neutra — cartão de verdade tem uma borda com
+  um brilho de metal, não uma linha reta plana.
+
+Reteste completo de novo: troca de categoria, busca, ticker, Meus
+Cálculos, 20 páginas sem erro de console, e confirmação de que a
+animação de entrada não deixa nenhum elemento preso invisível.
+
 ## Escopo consciente (o que NÃO está incluído)
 
 - IRRF sobre saldo de salário/13º proporcional **dentro da rescisão**

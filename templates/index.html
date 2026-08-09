@@ -116,23 +116,28 @@
             <h2 class="font-display text-2xl font-bold text-ink">{{ categoria.nome }}</h2>
             <span class="font-numeros text-sm text-ink-faint">{{ categoria.itens | length }} lançamentos</span>
           </div>
-          <div class="divide-y divide-border">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-6">
             {% for item in categoria.itens %}
               {% set destaque = loop.first %}
               <a href="/{{ item.href }}"
-                 class="group flex items-center gap-4 sm:gap-5 py-5 sm:py-6 -mx-4 px-4 sm:-mx-5 sm:px-5 hover:bg-elevated/60 transition-colors {{ 'bg-elevated/35' if destaque else '' }}">
-                <span class="font-numeros text-xs w-8 shrink-0 {{ 'text-accent' if destaque else 'text-ink-faint' }}">{{ "%03d"|format(loop.index) }}</span>
-                <span class="w-9 h-9 rounded-lg items-center justify-center shrink-0 hidden sm:flex transition-colors {{ 'bg-accent/15 text-accent' if destaque else 'bg-elevated text-accent group-hover:bg-accent/15' }}">
-                  <i data-lucide="{{ item.icone }}" class="w-4.5 h-4.5"></i>
-                </span>
-                <div class="min-w-0 flex-1">
-                  <p class="font-display font-semibold text-ink group-hover:text-accent transition-colors {{ 'text-xl' if destaque else 'text-base' }}">{{ item.label }}</p>
-                  <p class="text-sm text-ink-muted mt-1 line-clamp-1 sm:line-clamp-none">{{ item.desc }}</p>
+                 class="cartao-financeiro {{ 'cartao-financeiro--destaque' if destaque else '' }} group relative overflow-hidden rounded-[20px] p-5 flex flex-col justify-between min-h-[190px]">
+                <span class="cartao-sheen"></span>
+                <div class="relative flex items-start justify-between">
+                  <span class="w-10 h-10 rounded-[10px] bg-gradient-to-br from-accent to-accent-hover flex items-center justify-center text-accent-ink shadow-[0_6px_14px_-6px_rgba(212,167,44,0.65)]">
+                    <i data-lucide="{{ item.icone }}" class="w-4.5 h-4.5"></i>
+                  </span>
+                  <span class="font-numeros text-[10px] tracking-[0.15em] text-ink-faint uppercase">Nº {{ "%03d"|format(loop.index) }}</span>
                 </div>
-                <span class="leader hidden sm:block"></span>
-                <span class="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium text-ink-faint group-hover:text-accent transition-colors font-numeros">
-                  calcular <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-0.5 transition-transform"></i>
-                </span>
+                <div class="relative mt-6">
+                  <p class="font-display font-bold text-ink tracking-tight leading-snug {{ 'text-xl' if destaque else 'text-base' }} group-hover:text-accent transition-colors">{{ item.label | upper }}</p>
+                  <p class="text-xs text-ink-muted mt-2 line-clamp-2">{{ item.desc }}</p>
+                </div>
+                <div class="relative mt-5 flex items-center justify-between font-numeros">
+                  <span class="text-ink-faint text-[11px] tracking-[0.2em]">•••• •••• •••• {{ "%04d"|format(loop.index) }}</span>
+                  <span class="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-accent">
+                    calcular <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-0.5 transition-transform"></i>
+                  </span>
+                </div>
               </a>
             {% endfor %}
           </div>

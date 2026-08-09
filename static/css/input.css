@@ -105,25 +105,12 @@ button:active:not(:disabled), .btn-like:active {
    trocou a decoração mas manteve o mesmo esqueleto "hero no topo + pilha
    vertical de seções" das rodadas anteriores — reclamação explícita do
    usuário de que a POSIÇÃO de nada tinha mudado). .stamp (carimbo da v3)
-   foi removido por ficar sem uso nesta versão (checado por grep antes de
-   apagar) — a faixa de confiança virou texto simples no rodapé da
-   sidebar/página em vez de um componente decorativo à parte.
+   e .leader (linha pontilhada das linhas de lançamento da v4/v4.1/v4.2)
+   foram removidos por ficarem sem uso depois da v4.3 (cartões no lugar
+   de linhas — ver .cartao-financeiro abaixo), checado por grep antes de
+   apagar cada um.
 
-   .leader — "linha pontilhada" de fatura/menu impresso, conectando um
-   rótulo a um valor (ex.: "INSS ‥‥‥‥‥‥ R$ 248,60") em cada linha de
-   calculadora do painel. Sempre dentro de um flex row com
-   items-baseline; o translateY sobe o traço até perto da linha de base
-   do texto em vez de ficar solto no meio da caixa. */
-.leader {
-  flex: 1 1 auto;
-  min-width: 1rem;
-  align-self: flex-end;
-  margin-bottom: 0.4em;
-  border-bottom: 2px dotted var(--color-border);
-  opacity: 0.7;
-}
-
-/* v4.2 — "TA SEM NENHUMA ESTETICA BONITA": posição (v4) e respiro
+   v4.2 — "TA SEM NENHUMA ESTETICA BONITA": posição (v4) e respiro
    (v4.1) já resolvidos, mas a página ficou monocromática/plana — só
    texto sobre fundo sólido, zero textura/profundidade. `.folha-extrato`
    é só uma CAMADA DE POLIMENTO por cima da mesma estrutura (não mexe em
@@ -153,6 +140,60 @@ button:active:not(:disabled), .btn-like:active {
 .folha-extrato > * {
   position: relative;
   z-index: 1;
+}
+
+/* v4.3 — "EU QUERO QUE AS OPÇOES VOLTEM A SER BLOQUINHOS, MAS DIFERENTE
+   DE TUDO QUE VC JA FEZ E BEM BONITO": usuário quis blocos de volta (a
+   v3/v4 tinham trocado cartão por linha de lançamento), mas explicitou
+   "diferente de tudo que já fez" — a v2 (bento grid, antes desta sessão
+   de rodadas) já tinha usado "cartão arredondado com ícone no topo +
+   título + descrição + seta", então repetir esse molde não serve.
+   Resposta: em vez de um cartão genérico, cada calculadora virou um
+   CARTÃO FINANCEIRO de verdade — a peça mais bonita e reconhecível do
+   próprio domínio (cartão de crédito/débito), não um componente de UI
+   genérico. Mantém a metáfora "extrato" da v3/v4 (o site inteiro já é
+   um documento financeiro) só que agora com o objeto irmão dela: o
+   cartão. Detalhes que fazem a metáfora funcionar: "chip" dourado
+   (badge do ícone, gradiente metálico), número mascarado
+   ("•••• •••• •••• 0001", terminando no índice do item — mesmo dado da
+   numeração da v4, reaproveitado com propósito novo), nome em
+   caixa-alta como um nome em relevo de cartão, brilho diagonal que
+   varre o cartão no hover (`.cartao-sheen`, como luz refletindo no
+   plástico/metal). --destaque ganha um gradiente com um toque a mais do
+   acento, sem quebrar o formato do cartão (não vira maior/diferente dos
+   outros, só mais "premium"). */
+.cartao-financeiro {
+  position: relative;
+  background: linear-gradient(150deg, var(--color-elevated) 0%, var(--color-surface) 55%, var(--color-elevated) 100%);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
+  box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+.cartao-financeiro:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+  box-shadow: 0 26px 48px -22px rgba(0, 0, 0, 0.8), 0 0 0 1px color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+.cartao-financeiro--destaque {
+  background: linear-gradient(150deg, color-mix(in srgb, var(--color-accent) 9%, var(--color-elevated)) 0%, var(--color-surface) 55%, var(--color-elevated) 100%);
+  border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+}
+.cartao-sheen {
+  position: absolute;
+  inset: -60% -20%;
+  background: linear-gradient(115deg, transparent 42%, color-mix(in srgb, var(--color-accent) 16%, transparent) 50%, transparent 58%);
+  transform: translateX(-45%);
+  transition: transform 750ms ease;
+  pointer-events: none;
+}
+.cartao-financeiro:hover .cartao-sheen {
+  transform: translateX(45%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cartao-financeiro,
+  .cartao-sheen {
+    transition: none;
+  }
 }
 
 /* Input numérico sem as setinhas de incremento nativas do navegador — nesta
