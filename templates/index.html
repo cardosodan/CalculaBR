@@ -2,7 +2,7 @@
 
 {% block content %}
 <section id="hero-home" class="max-w-6xl mx-auto px-4 sm:px-6 pt-14 pb-16">
-  <div class="grid lg:grid-cols-5 gap-10 lg:gap-8 items-center">
+  <div class="grid lg:grid-cols-5 gap-10 lg:gap-14 items-start">
     <div class="lg:col-span-3">
       <p class="hero-home__item inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent bg-elevated border border-border rounded-full px-3 py-1.5">
         <span class="relative flex w-1.5 h-1.5">
@@ -42,32 +42,39 @@
       </div>
     </div>
 
-    <!-- "Visor de calculadora" decorativo — em vez de mais um bloco de
-         texto, mostra resultados reais (rotativos) das próprias
-         calculadoras, reforçando a identidade "extrato/visor digital" do
-         site já usada nos números (font-numeros) em vez de um ícone
-         genérico de hero. -->
+    <!-- "Recibo" interativo — de propósito NADA de card arredondado com
+         badge flutuante (esse é o molde genérico repetido; ver nota em
+         README). Um recibo de papel (borda serrilhada via CSS, sem
+         cantos arredondados, divisores tracejados, tudo monoespaçado) é
+         uma metáfora só desse site (calculadora ↔ nota fiscal) e, ao
+         contrário do "visor" antigo (só decorativo), esse é
+         FUNCIONAL: o campo é um input de verdade, recalcula ao vivo
+         usando calcularDescontoINSS/calcularIRRFMensal (as mesmas
+         funções da calculadora de Salário Líquido de verdade). -->
     <div class="hero-home__item lg:col-span-2">
-      <div class="bg-surface border border-border rounded-3xl p-5 shadow-2xl shadow-black/40">
-        <div class="flex items-center justify-between px-1 mb-3">
-          <span class="font-numeros text-[11px] text-ink-faint tracking-widest">CALCULABR // VISOR</span>
-          <span class="flex gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-ink-faint/40"></span>
-            <span class="w-2 h-2 rounded-full bg-ink-faint/40"></span>
-            <span class="w-2 h-2 rounded-full bg-accent"></span>
-          </span>
+      <div id="recibo-hero" class="recibo bg-elevated px-6 py-8 font-numeros text-sm">
+        <p class="text-center text-ink-faint text-xs tracking-[0.2em]">CALCULABR</p>
+        <p class="text-center text-ink-faint text-[10px] tracking-widest mt-0.5">EXPERIMENTE AGORA</p>
+        <div class="border-t border-dashed border-border mt-4 pt-4">
+          <label for="recibo-salario" class="block text-ink-faint text-xs mb-1.5">SALÁRIO BRUTO</label>
+          <div class="relative">
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 text-ink-faint">R$</span>
+            <input id="recibo-salario" type="text" inputmode="decimal" value="3000"
+                   class="w-full bg-transparent border-0 border-b border-border pl-8 pb-1.5 text-lg text-ink font-bold focus:outline-none focus:border-accent">
+          </div>
         </div>
-        <div class="bg-elevated rounded-2xl p-6 text-right overflow-hidden">
-          <p id="visor-label" class="font-numeros text-xs text-ink-faint uppercase tracking-wide truncate">Carregando…</p>
-          <p id="visor-valor" class="font-numeros text-4xl sm:text-5xl font-bold text-accent mt-2 tabular-nums" style="text-shadow: 0 0 24px color-mix(in srgb, var(--color-accent) 45%, transparent)">—</p>
+        <div class="border-t border-dashed border-border mt-4 pt-4 space-y-2 text-ink-muted">
+          <div class="flex justify-between"><span>INSS</span><span id="recibo-inss">—</span></div>
+          <div class="flex justify-between"><span>IRRF</span><span id="recibo-irrf">—</span></div>
         </div>
-        <div class="flex items-center gap-1.5 mt-4 px-1">
-          {% for i in range(5) %}
-            <span class="visor-dot h-1 flex-1 rounded-full bg-elevated"></span>
-          {% endfor %}
+        <div class="border-t border-dashed border-border mt-4 pt-4 flex justify-between items-baseline">
+          <span class="text-ink-faint text-xs">LÍQUIDO</span>
+          <span id="recibo-liquido" class="text-2xl font-bold text-accent">—</span>
         </div>
       </div>
-      <p class="text-xs text-ink-faint text-center mt-3">Exemplos reais das próprias calculadoras, atualizando sozinho.</p>
+      <p class="text-xs text-ink-faint text-center mt-3">
+        Cálculo real, ao vivo — a mesma conta de <a href="/salario-liquido.html" class="underline hover:text-accent">Salário Líquido</a>, só que aqui já de cara.
+      </p>
     </div>
   </div>
 </section>
@@ -159,47 +166,32 @@
     {% endfor %}
   ];
 
-  // "Visor" do hero: cicla por resultados reais e ilustrativos das
-  // próprias calculadoras — prova o produto em vez de só descrever ele.
-  const EXEMPLOS_VISOR = [
-    { label: "13º salário de R$ 3.000 (1ª parcela)", valor: "R$ 1.500,00" },
-    { label: "Rescisão sem justa causa, R$ 3.000/mês, 3 anos", valor: "R$ 12.132,00" },
-    { label: "INSS sobre salário de R$ 3.000", valor: "R$ 248,60" },
-    { label: "ITBI em Manaus, imóvel de R$ 300 mil", valor: "R$ 6.000,00" },
-    { label: "CDB a 110% do CDI, R$ 10 mil em 360 dias", valor: "R$ 11.226,90" },
-    { label: "Dados enviados pra algum servidor", valor: "R$ 0,00" },
-  ];
+  // Recibo interativo do hero: recalcula ao vivo a cada tecla digitada,
+  // reaproveitando as mesmas funções da calculadora de Salário Líquido
+  // de verdade (calcularDescontoINSS/calcularIRRFMensal, common.js) —
+  // funcional, não só decorativo.
+  (function iniciarReciboHero() {
+    const input = document.getElementById("recibo-salario");
+    const elInss = document.getElementById("recibo-inss");
+    const elIrrf = document.getElementById("recibo-irrf");
+    const elLiquido = document.getElementById("recibo-liquido");
+    if (!input) return;
 
-  (function iniciarVisor() {
-    const elLabel = document.getElementById("visor-label");
-    const elValor = document.getElementById("visor-valor");
-    const pontos = document.querySelectorAll(".visor-dot");
-    if (!elLabel || !elValor) return;
-
-    let indice = 0;
-    const prefereMenosMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    function mostrar(i) {
-      const exemplo = EXEMPLOS_VISOR[i];
-      pontos.forEach((p, pi) => p.classList.toggle("bg-accent", pi === i % pontos.length));
-      pontos.forEach((p, pi) => p.classList.toggle("bg-elevated", pi !== i % pontos.length));
-
-      if (typeof gsap === "undefined" || prefereMenosMovimento) {
-        elLabel.textContent = exemplo.label;
-        elValor.textContent = exemplo.valor;
+    function recalcular() {
+      const salario = parseNumeroBR(input.value);
+      if (!Number.isFinite(salario) || salario <= 0) {
+        elInss.textContent = elIrrf.textContent = elLiquido.textContent = "—";
         return;
       }
-      const tl = gsap.timeline();
-      tl.to([elLabel, elValor], { opacity: 0, y: -6, duration: 0.25, ease: "power2.in" })
-        .call(() => { elLabel.textContent = exemplo.label; elValor.textContent = exemplo.valor; })
-        .fromTo([elLabel, elValor], { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" });
+      const inss = calcularDescontoINSS(salario).desconto;
+      const irrf = calcularIRRFMensal(salario - inss, 0);
+      elInss.textContent = formatarBRL(inss);
+      elIrrf.textContent = formatarBRL(irrf);
+      elLiquido.textContent = formatarBRL(salario - inss - irrf);
     }
 
-    mostrar(0);
-    setInterval(() => {
-      indice = (indice + 1) % EXEMPLOS_VISOR.length;
-      mostrar(indice);
-    }, 3200);
+    input.addEventListener("input", recalcular);
+    recalcular();
   })();
 
   // Entrada da home: hero em cascata, depois cada seção de categoria ao

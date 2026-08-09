@@ -89,6 +89,32 @@ button:active:not(:disabled), .btn-like:active {
   opacity: 1;
 }
 
+/* "Recibo" interativo do hero da home — de propósito o oposto de um card
+   arredondado: borda SERRILHADA (papel de nota fiscal/cupom, via
+   background gradients formando triangulozinhos, não clip-path — mais
+   barato e não corta o conteúdo se a altura mudar). Ver index.html pro
+   porquê (evitar o molde "card arredondado + badge flutuante" repetido
+   noutro site do mesmo autor). */
+.recibo {
+  position: relative;
+  --serra-tam: 14px;
+}
+.recibo::before,
+.recibo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background-image:
+    linear-gradient(135deg, var(--color-base) 50%, transparent 50%),
+    linear-gradient(-135deg, var(--color-base) 50%, transparent 50%);
+  background-size: var(--serra-tam) 16px;
+  background-repeat: repeat-x;
+}
+.recibo::before { top: -8px; background-position: bottom left; }
+.recibo::after { bottom: -8px; background-position: top left; }
+
 /* Faixa de confiança da home (marquee horizontal contínuo) — os dois
    grupos de itens (ver index.html, renderizados 2x) somam exatamente
    100% da largura do track, então a animação desloca -50% e o loop fecha
