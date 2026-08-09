@@ -12,6 +12,11 @@
     prefeitura.
   </p>
 
+  <p class="selo-verificado mt-4 inline-flex items-center gap-1.5 text-xs text-ink-faint bg-elevated border border-border rounded-full px-3 py-1.5">
+    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-accent"></i>
+    Tabelas conferidas em {{ verificado_em }}
+  </p>
+
   <div class="grid lg:grid-cols-5 gap-6 mt-8">
     <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
       <div>
@@ -59,10 +64,14 @@
   </div>
 
   <p class="mt-8 text-xs text-ink-faint max-w-2xl">
-    Muitas cidades usam alíquota progressiva (sobe conforme o valor do
+    <strong class="text-ink-muted">Esta é a calculadora com maior variação entre cidades do site</strong> —
+    o IPTU muda de alíquota (às vezes até dentro da mesma cidade, por
+    bairro/zona) mais do que qualquer outro imposto daqui. Muitas
+    prefeituras também usam alíquota progressiva (sobe conforme o valor do
     imóvel) e/ou diferenciam terreno vazio de construído — esta calculadora
-    usa uma alíquota única simples. Desconto/parcelamento variam por
-    prefeitura, os valores acima são só referência.
+    aplica só uma alíquota única simples. Trate o resultado como uma
+    estimativa de ordem de grandeza, não o valor exato do seu carnê.
+    Desconto/parcelamento também variam por prefeitura.
   </p>
 </div>
 {% endblock %}

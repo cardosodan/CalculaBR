@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}CalculaBR — Calculadoras trabalhistas, tributárias, crédito e investimento{% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}16 calculadoras gratuitas: rescisão, férias, 13º, INSS, IRPF, ITBI, IPVA, IPTU, MEI, financiamentos, cartão de crédito, consignado e investimentos — com as tabelas vigentes no Brasil.{% endblock %}">
+  <meta name="description" content="{% block meta_description %}18 calculadoras gratuitas: rescisão, férias, 13º, INSS, IRPF, ITBI, IPVA, IPTU, MEI, financiamentos, cartão de crédito, consignado e investimentos — com as tabelas vigentes no Brasil.{% endblock %}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,7 @@
         <span class="text-accent">Calcula</span>BR
       </a>
 
-      <!-- Desktop: um dropdown por categoria (16 calculadoras não cabem "flat"). -->
+      <!-- Desktop: um dropdown por categoria (18 calculadoras não cabem "flat"). -->
       <div class="hidden md:flex items-center gap-1">
         {% for categoria in categorias_nav %}
           {% set categoria_ativa = categoria.itens | selectattr("slug", "equalto", active) | list | length > 0 %}

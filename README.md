@@ -1,10 +1,11 @@
 # CalculaBR
 
-Site estático (sem backend, sem banco de dados) com **16 calculadoras**
+Site estático (sem backend, sem banco de dados) com **18 calculadoras**
 pro Brasil, organizadas em 4 categorias:
 
 - **Trabalhista**: Rescisão, Férias Proporcionais, 13º Salário, Salário
-  Líquido, Horas Extras, INSS.
+  Líquido, Horas Extras, INSS, CLT vs PJ, FGTS (Saque-Aniversário vs
+  Saque-Rescisão).
 - **Tributário**: IRPF (declaração anual), ITBI, IPVA, IPTU, MEI (DAS).
 - **Crédito & Financiamento**: Financiamento Imobiliário (SAC vs Price),
   Financiamento de Veículo, Cartão de Crédito (rotativo), Empréstimo
@@ -58,6 +59,19 @@ própria (o estado "escondido" vem só de classe `hidden`/inline style, não
 de CSS estático). Sempre usar **valores explícitos** (`{opacity: 1, y: 0}`)
 em vez de `clearProps` numa rede de segurança dessas, a menos que esteja
 100% confirmado que o CSS de base do elemento já é visível por natureza.
+
+**2º bug real, achado no redesign da home**: o scroll-reveal das seções de
+categoria (`index.html`) tinha a rede de segurança **dentro** do callback
+`onEnter` do `ScrollTrigger.create` — ou seja, ela só disparava se o
+próprio ScrollTrigger já tivesse disparado primeiro. Se o gatilho de
+rolagem nunca dispara pra uma seção (aconteceu de verdade: só a 1ª
+categoria da home renderizava, as outras 3 ficavam com `opacity:0` pra
+sempre), a rede de segurança nunca era agendada — o oposto do que uma
+rede de segurança deveria fazer. Corrigido agendando o `setTimeout`
+**fora** do callback, incondicionalmente, junto com `ScrollTrigger.refresh()`
+num listener de `window.load` (corrige a causa raiz: posições de gatilho
+calculadas antes de fontes/imagens terminarem de carregar). Mesmo bug
+existia no `ScrollTrigger.batch` do site da DCodes — corrigido lá também.
 
 ## Estrutura
 
@@ -152,6 +166,45 @@ desalinhar quando a tabela do ano mudar.
   que muda, são matemática) — `calcularSAC`/`calcularPrice`/
   `calcularValorMaximoPrice` em `common.js`, compartilhadas entre
   Financiamento Imobiliário, Financiamento de Veículo e Consignado.
+- **Saque-aniversário do FGTS**: alíquota + parcela adicional fixa por
+  faixa de saldo (Lei 8.036/90) — verificado continuidade exata nas
+  bordas de cada faixa antes de usar.
+
+## Rodada de consultoria (skill `llm-council`) + redesign + 2 calculadoras novas
+
+Usada a skill `llm-council` pra consultar ChatGPT/Gemini sobre pontos
+fortes/fracos do site (só o Gemini respondeu — a chave da OpenAI estava
+sem crédito). Da resposta, o que virou ação de verdade:
+
+- **Selo "Tabelas conferidas em {mês/ano}"** em toda calculadora — maior
+  risco de confiança apontado (tabela oficial mudar e o site não
+  acompanhar). Data centralizada em `VERIFICADO_EM` (`build.py`) — é a
+  ÚNICA linha que precisa mudar quando as tabelas forem revisadas de novo.
+- **2 calculadoras novas**: CLT vs PJ (compara valor efetivo mensal
+  diluindo FGTS/13º/férias do lado CLT) e FGTS Saque-Aniversário vs
+  Saque-Rescisão.
+- **Exportar em PDF**: botão "Baixar em PDF" (`adicionarBotaoExportar`,
+  `common.js`) chama `window.print()` — o navegador já oferece "Salvar
+  como PDF" no próprio diálogo, sem nenhuma lib. CSS de impressão
+  (`input.css`, `@media print`) redefine os tokens de cor pra um tema
+  claro só na impressão e esconde nav/formulário/placeholder, sobrando só
+  o resultado na folha.
+- **Não implementado** (precisa de decisão de negócio do usuário, não é
+  "problema" resolvível só com código): botão de doação via Pix (precisa
+  da chave Pix real) e links de afiliado (precisam de parceria/cadastro
+  real primeiro) — a IA sugeriu os dois, mas adicionar um botão de
+  pagamento ou link de afiliado falso/placeholder seria enganoso.
+
+**Redesign da home** (pedido separado do usuário: "o design tá muito
+genérico de IA, sempre texto e bloquinhos"): hero centralizado + grid
+uniforme de cards idênticos — o padrão mais repetido em site gerado por
+IA que existe — trocado por hero assimétrico (texto à esquerda, um
+"visor" decorativo à direita que cicla resultados reais das próprias
+calculadoras) + faixa de confiança em marquee horizontal + bento grid por
+categoria (1º item de cada categoria vira um card grande/largo de
+destaque, o resto varia entre largo e estreito, nunca caixinhas
+uniformes). Fonte de título trocada de Fraunces (serifada) pra Manrope
+(geométrica) num pedido anterior do usuário pelo mesmo motivo.
 
 ## Escopo consciente (o que NÃO está incluído)
 

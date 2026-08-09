@@ -89,6 +89,22 @@ button:active:not(:disabled), .btn-like:active {
   opacity: 1;
 }
 
+/* Faixa de confiança da home (marquee horizontal contínuo) — os dois
+   grupos de itens (ver index.html, renderizados 2x) somam exatamente
+   100% da largura do track, então a animação desloca -50% e o loop fecha
+   sem nenhum salto/costura visível. */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  width: max-content;
+  animation: marquee-scroll 26s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
 /* Input numérico sem as setinhas de incremento nativas do navegador — nesta
    UI cada campo já tem prefixo "R$"/sufixo "%" desenhado, as setinhas do
    Chrome ficavam por cima do texto em telas estreitas. */
@@ -106,4 +122,33 @@ input[type="number"] {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+}
+
+/* ==========================================================================
+   IMPRESSÃO / "EXPORTAR EM PDF" (botão injetado por adicionarBotaoExportar
+   em common.js, chama window.print() — o navegador já oferece "Salvar como
+   PDF" no diálogo de impressão, sem precisar de nenhuma lib de geração de
+   PDF). Redefine os tokens de cor pra um tema claro só na impressão (nunca
+   imprimir fundo escuro cobrindo a folha inteira) e esconde tudo que não é
+   o resultado em si (nav, rodapé, formulário, placeholder).
+   ========================================================================== */
+@media print {
+  :root {
+    --color-base: #ffffff;
+    --color-surface: #ffffff;
+    --color-elevated: #f2f2f2;
+    --color-border: #cccccc;
+    --color-ink: #111111;
+    --color-ink-muted: #444444;
+    --color-ink-faint: #666666;
+    --color-accent: #a3790a;
+    --color-accent-ink: #111111;
+  }
+  header, footer, nav, .no-print, [id^="placeholder-"],
+  .grid.lg\:grid-cols-5 > :first-child {
+    display: none !important;
+  }
+  .grid.lg\:grid-cols-5 { display: block !important; }
+  .spotlight::before { display: none !important; }
+  body { background: #fff; }
 }

@@ -1,41 +1,94 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section id="hero-home" class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-10 text-center">
-  <p class="hero-home__item text-sm font-medium text-accent uppercase tracking-wide">Grátis · sem cadastro · 16 calculadoras</p>
-  <h1 class="hero-home__item font-display text-4xl sm:text-5xl font-semibold text-ink mt-3 text-balance">
-    As contas que todo brasileiro
-    <br class="hidden sm:block">
-    precisa fazer, <span class="text-accent">de um jeito só</span>
-  </h1>
-  <p class="hero-home__item mt-5 text-ink-muted max-w-xl mx-auto">
-    Trabalhista, tributário, crédito e investimentos — com as tabelas e
-    alíquotas vigentes, direto no navegador, sem enviar nenhum dado pra
-    lugar nenhum.
-  </p>
+<section id="hero-home" class="max-w-6xl mx-auto px-4 sm:px-6 pt-14 pb-16">
+  <div class="grid lg:grid-cols-5 gap-10 lg:gap-8 items-center">
+    <div class="lg:col-span-3">
+      <p class="hero-home__item inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent bg-elevated border border-border rounded-full px-3 py-1.5">
+        <span class="relative flex w-1.5 h-1.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-60"></span>
+          <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
+        </span>
+        18 calculadoras · grátis · sem cadastro
+      </p>
+      <h1 class="hero-home__item font-display text-5xl sm:text-[3.75rem] font-extrabold text-ink mt-5 leading-[1.04] text-balance">
+        Faça as contas
+        <br>que <span class="text-accent">todo</span> brasileiro
+        <br>precisa fazer.
+      </h1>
+      <p class="hero-home__item mt-6 text-ink-muted max-w-md text-base sm:text-lg">
+        Trabalhista, tributário, crédito e investimentos — direto no
+        navegador, sem enviar nenhum dado pra lugar nenhum.
+      </p>
 
-  <div class="hero-home__item mt-7 max-w-md mx-auto" x-data="{ busca: '' }">
-    <div class="relative">
-      <i data-lucide="search" class="w-4 h-4 text-ink-faint absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-      <input x-model="busca" type="text" placeholder="Buscar uma calculadora… (ex: 13º, IPVA, consignado)"
-             class="w-full bg-surface border border-border rounded-full pl-10 pr-4 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
-    </div>
-    <template x-if="busca.trim() !== ''">
-      <div class="mt-2 bg-surface border border-border rounded-2xl overflow-hidden text-left divide-y divide-border">
-        <template x-for="item in window.CALCULADORAS.filter(c => (c.label + ' ' + c.categoria).toLowerCase().includes(busca.toLowerCase()))" :key="item.href">
-          <a :href="'/' + item.href" class="flex items-center justify-between px-4 py-2.5 hover:bg-elevated transition-colors">
-            <span class="text-sm text-ink" x-text="item.label"></span>
-            <span class="text-xs text-ink-faint" x-text="item.categoria"></span>
-          </a>
+      <div class="hero-home__item mt-8 max-w-md" x-data="{ busca: '' }">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-ink-faint absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input x-model="busca" type="text" placeholder="Buscar uma calculadora… (ex: 13º, IPVA, consignado)"
+                 class="w-full bg-surface border border-border rounded-full pl-10 pr-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+        <template x-if="busca.trim() !== ''">
+          <div class="mt-2 bg-surface border border-border rounded-2xl overflow-hidden text-left divide-y divide-border">
+            <template x-for="item in window.CALCULADORAS.filter(c => (c.label + ' ' + c.categoria).toLowerCase().includes(busca.toLowerCase()))" :key="item.href">
+              <a :href="'/' + item.href" class="flex items-center justify-between px-4 py-2.5 hover:bg-elevated transition-colors">
+                <span class="text-sm text-ink" x-text="item.label"></span>
+                <span class="text-xs text-ink-faint" x-text="item.categoria"></span>
+              </a>
+            </template>
+            <p x-show="window.CALCULADORAS.filter(c => (c.label + ' ' + c.categoria).toLowerCase().includes(busca.toLowerCase())).length === 0"
+               class="px-4 py-3 text-sm text-ink-faint">Nenhuma calculadora encontrada.</p>
+          </div>
         </template>
-        <p x-show="window.CALCULADORAS.filter(c => (c.label + ' ' + c.categoria).toLowerCase().includes(busca.toLowerCase())).length === 0"
-           class="px-4 py-3 text-sm text-ink-faint">Nenhuma calculadora encontrada.</p>
       </div>
-    </template>
+    </div>
+
+    <!-- "Visor de calculadora" decorativo — em vez de mais um bloco de
+         texto, mostra resultados reais (rotativos) das próprias
+         calculadoras, reforçando a identidade "extrato/visor digital" do
+         site já usada nos números (font-numeros) em vez de um ícone
+         genérico de hero. -->
+    <div class="hero-home__item lg:col-span-2">
+      <div class="bg-surface border border-border rounded-3xl p-5 shadow-2xl shadow-black/40">
+        <div class="flex items-center justify-between px-1 mb-3">
+          <span class="font-numeros text-[11px] text-ink-faint tracking-widest">CALCULABR // VISOR</span>
+          <span class="flex gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-ink-faint/40"></span>
+            <span class="w-2 h-2 rounded-full bg-ink-faint/40"></span>
+            <span class="w-2 h-2 rounded-full bg-accent"></span>
+          </span>
+        </div>
+        <div class="bg-elevated rounded-2xl p-6 text-right overflow-hidden">
+          <p id="visor-label" class="font-numeros text-xs text-ink-faint uppercase tracking-wide truncate">Carregando…</p>
+          <p id="visor-valor" class="font-numeros text-4xl sm:text-5xl font-bold text-accent mt-2 tabular-nums" style="text-shadow: 0 0 24px color-mix(in srgb, var(--color-accent) 45%, transparent)">—</p>
+        </div>
+        <div class="flex items-center gap-1.5 mt-4 px-1">
+          {% for i in range(5) %}
+            <span class="visor-dot h-1 flex-1 rounded-full bg-elevated"></span>
+          {% endfor %}
+        </div>
+      </div>
+      <p class="text-xs text-ink-faint text-center mt-3">Exemplos reais das próprias calculadoras, atualizando sozinho.</p>
+    </div>
   </div>
 </section>
 
-<section class="max-w-6xl mx-auto px-4 sm:px-6 pb-20 space-y-14">
+<!-- Faixa de confiança — quebra o padrão "hero + grid" com uma marquee
+     horizontal (técnica popular em landing pages "premium", nunca usada
+     nas páginas internas pra não virar ruído repetitivo). -->
+<div class="border-y border-border bg-surface overflow-hidden">
+  <div class="marquee-track flex items-center gap-12 py-4 whitespace-nowrap">
+    {% for _ in range(2) %}
+      <div class="flex items-center gap-12 shrink-0">
+        <span class="flex items-center gap-2 text-sm text-ink-muted"><i data-lucide="shield-check" class="w-4 h-4 text-accent"></i>Tabelas oficiais conferidas em {{ verificado_em }}</span>
+        <span class="flex items-center gap-2 text-sm text-ink-muted"><i data-lucide="lock" class="w-4 h-4 text-accent"></i>Nenhum dado sai do seu navegador</span>
+        <span class="flex items-center gap-2 text-sm text-ink-muted"><i data-lucide="ban" class="w-4 h-4 text-accent"></i>Sem cadastro, sem cartão, sem pegadinha</span>
+        <span class="flex items-center gap-2 text-sm text-ink-muted"><i data-lucide="calculator" class="w-4 h-4 text-accent"></i>18 calculadoras em 4 áreas</span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-16">
   {% for categoria in categorias_nav %}
     <div class="categoria-home">
       <div class="flex items-center gap-2.5 mb-5">
@@ -44,14 +97,46 @@
         </div>
         <h2 class="font-display text-xl font-semibold text-ink">{{ categoria.nome }}</h2>
       </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <!-- Bento grid: o primeiro item de cada categoria ganha um bloco
+           grande (destaque editorial de verdade, não só "primeiro da
+           lista"), o resto varia entre largo e estreito — de propósito
+           NUNCA uma grade uniforme de caixinhas idênticas. -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[minmax(11rem,auto)]">
         {% for item in categoria.itens %}
-          <a href="/{{ item.href }}" class="group spotlight cartao-home bg-surface border border-border rounded-2xl p-5 hover:border-accent/40 hover:-translate-y-1 transition-all duration-150">
-            <div class="w-10 h-10 rounded-xl bg-elevated flex items-center justify-center text-accent mb-3.5">
-              <i data-lucide="{{ item.icone }}" class="w-4.5 h-4.5"></i>
-            </div>
-            <p class="font-display text-base font-semibold text-ink group-hover:text-accent transition-colors">{{ item.label }}</p>
-            <p class="mt-1.5 text-sm text-ink-muted">{{ item.desc }}</p>
+          {% set destaque = loop.first %}
+          {% set larga = (loop.index0 % 3 == 1) and not destaque %}
+          {% set largura_destaque = 'col-span-4' if categoria.itens | length == 1 else 'col-span-2' %}
+          <a href="/{{ item.href }}"
+             class="group spotlight cartao-home relative overflow-hidden bg-surface border border-border rounded-2xl hover:border-accent/40 hover:-translate-y-1 transition-all duration-150 flex items-center
+                    {{ (largura_destaque + ' p-7') if destaque else 'p-5 flex-col items-stretch justify-between' }}
+                    {{ 'col-span-2' if larga else '' }}">
+            {% if destaque %}
+              <i data-lucide="{{ item.icone }}" class="absolute -right-5 -bottom-5 w-32 h-32 text-ink opacity-[0.05] group-hover:opacity-[0.08] transition-opacity" stroke-width="1"></i>
+              <div class="relative flex items-center gap-5">
+                <div class="w-14 h-14 shrink-0 rounded-2xl bg-elevated flex items-center justify-center text-accent">
+                  <i data-lucide="{{ item.icone }}" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <p class="font-display text-xl font-semibold text-ink group-hover:text-accent transition-colors">{{ item.label }}</p>
+                  <p class="mt-1 text-sm text-ink-muted">{{ item.desc }}</p>
+                </div>
+                <span class="ml-auto shrink-0 hidden sm:inline-flex items-center gap-1 text-xs font-medium text-ink-faint group-hover:text-accent transition-colors">
+                  Calcular <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-0.5 transition-transform"></i>
+                </span>
+              </div>
+            {% else %}
+              <div>
+                <div class="w-10 h-10 rounded-xl bg-elevated flex items-center justify-center text-accent mb-3.5">
+                  <i data-lucide="{{ item.icone }}" class="w-4.5 h-4.5"></i>
+                </div>
+                <p class="font-display text-base font-semibold text-ink group-hover:text-accent transition-colors">{{ item.label }}</p>
+                <p class="mt-1.5 text-sm text-ink-muted line-clamp-2">{{ item.desc }}</p>
+              </div>
+              <span class="mt-4 inline-flex items-center gap-1 text-xs font-medium text-ink-faint group-hover:text-accent transition-colors">
+                Calcular <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-0.5 transition-transform"></i>
+              </span>
+            {% endif %}
           </a>
         {% endfor %}
       </div>
@@ -74,10 +159,53 @@
     {% endfor %}
   ];
 
+  // "Visor" do hero: cicla por resultados reais e ilustrativos das
+  // próprias calculadoras — prova o produto em vez de só descrever ele.
+  const EXEMPLOS_VISOR = [
+    { label: "13º salário de R$ 3.000 (1ª parcela)", valor: "R$ 1.500,00" },
+    { label: "Rescisão sem justa causa, R$ 3.000/mês, 3 anos", valor: "R$ 12.132,00" },
+    { label: "INSS sobre salário de R$ 3.000", valor: "R$ 248,60" },
+    { label: "ITBI em Manaus, imóvel de R$ 300 mil", valor: "R$ 6.000,00" },
+    { label: "CDB a 110% do CDI, R$ 10 mil em 360 dias", valor: "R$ 11.226,90" },
+    { label: "Dados enviados pra algum servidor", valor: "R$ 0,00" },
+  ];
+
+  (function iniciarVisor() {
+    const elLabel = document.getElementById("visor-label");
+    const elValor = document.getElementById("visor-valor");
+    const pontos = document.querySelectorAll(".visor-dot");
+    if (!elLabel || !elValor) return;
+
+    let indice = 0;
+    const prefereMenosMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function mostrar(i) {
+      const exemplo = EXEMPLOS_VISOR[i];
+      pontos.forEach((p, pi) => p.classList.toggle("bg-accent", pi === i % pontos.length));
+      pontos.forEach((p, pi) => p.classList.toggle("bg-elevated", pi !== i % pontos.length));
+
+      if (typeof gsap === "undefined" || prefereMenosMovimento) {
+        elLabel.textContent = exemplo.label;
+        elValor.textContent = exemplo.valor;
+        return;
+      }
+      const tl = gsap.timeline();
+      tl.to([elLabel, elValor], { opacity: 0, y: -6, duration: 0.25, ease: "power2.in" })
+        .call(() => { elLabel.textContent = exemplo.label; elValor.textContent = exemplo.valor; })
+        .fromTo([elLabel, elValor], { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" });
+    }
+
+    mostrar(0);
+    setInterval(() => {
+      indice = (indice + 1) % EXEMPLOS_VISOR.length;
+      mostrar(indice);
+    }, 3200);
+  })();
+
   // Entrada da home: hero em cascata, depois cada seção de categoria ao
-  // rolar (ScrollTrigger — a home agora é bem mais longa que antes, não
-  // cabe tudo na tela de largada). animarEntradaEmLote já inclui a rede
-  // de segurança que garante tudo visível mesmo se o tween travar.
+  // rolar (ScrollTrigger — a home é longa, não cabe tudo na tela de
+  // largada). animarEntradaEmLote já inclui a rede de segurança que
+  // garante tudo visível mesmo se o tween travar.
   animarEntradaEmLote(document.querySelectorAll("#hero-home .hero-home__item"), { y: 18, duration: 0.7, stagger: 0.1 });
 
   if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -85,16 +213,34 @@
     document.querySelectorAll(".categoria-home").forEach((secao) => {
       const cartoes = secao.querySelectorAll(".cartao-home");
       gsap.set(cartoes, { opacity: 0, y: 20 });
+
+      // BUG REAL já visto antes (mesma classe do bug em revelarResultado):
+      // a rede de segurança precisa ser agendada JÁ, fora do onEnter — se
+      // ficar dentro, e o ScrollTrigger nunca disparar por qualquer
+      // motivo (cálculo de posição errado, elemento nunca cruza o
+      // threshold, tela não rola de verdade), a seção inteira fica
+      // opacity:0 pra sempre. Confirmado em teste: 3 das 4 categorias
+      // sumiram assim antes desta correção.
+      let finalizado = false;
+      const finalizar = () => {
+        if (finalizado) return;
+        finalizado = true;
+        gsap.set(cartoes, { opacity: 1, y: 0 });
+      };
+
       ScrollTrigger.create({
         trigger: secao,
-        start: "top 85%",
+        start: "top 95%",
         once: true,
         onEnter: () => {
+          if (finalizado) return;
+          finalizado = true;
           gsap.to(cartoes, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: "power3.out" });
-          setTimeout(() => gsap.set(cartoes, { opacity: 1, y: 0 }), cartoes.length * 60 + 1200);
         },
       });
+      setTimeout(finalizar, 2500);
     });
+    window.addEventListener("load", () => ScrollTrigger.refresh());
   }
 </script>
 {% endblock %}

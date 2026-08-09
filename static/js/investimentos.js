@@ -90,6 +90,7 @@ document.getElementById("btn-comparar").addEventListener("click", () => {
   document.getElementById("placeholder-comparador").classList.add("hidden");
   animarEntradaEmLote(container.querySelectorAll(":scope > div"));
   ativarSpotlightCards("#resultado-comparador .spotlight");
+  adicionarBotaoExportar(container);
 });
 
 document.getElementById("btn-simular-jc").addEventListener("click", () => {

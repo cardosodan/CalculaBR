@@ -18,7 +18,7 @@ TEMPLATES = RAIZ / "templates"
 STATIC = RAIZ / "static"
 DIST = RAIZ / "dist"
 
-# Agrupado por categoria — com 16 calculadoras um menu "flat" não cabe
+# Agrupado por categoria — com 18 calculadoras um menu "flat" não cabe
 # mais (rodada anterior tinha só 5). O nav (base.html) renderiza isso como
 # um dropdown por categoria no desktop e uma lista com cabeçalhos no
 # mobile; a home (index.html) usa a mesma estrutura pras seções.
@@ -39,6 +39,10 @@ CATEGORIAS_NAV = [
              "desc": "50%/100% sobre a hora normal, DSR e adicional noturno."},
             {"slug": "inss", "label": "INSS", "href": "inss.html", "icone": "landmark",
              "desc": "Desconto mensal com a tabela progressiva vigente."},
+            {"slug": "clt-vs-pj", "label": "CLT vs PJ", "href": "clt-vs-pj.html", "icone": "scale",
+             "desc": "Compara quanto sobra de verdade por mês nas duas propostas."},
+            {"slug": "fgts-aniversario", "label": "FGTS: Saque-Aniversário", "href": "fgts-aniversario.html", "icone": "cake",
+             "desc": "Quanto você recebe no aniversário vs. no saque-rescisão."},
         ],
     },
     {
@@ -85,6 +89,14 @@ CATEGORIAS_NAV = [
 # "todas as calculadoras" sem se importar com categoria.
 NAV_ITEMS = [item for cat in CATEGORIAS_NAV for item in cat["itens"]]
 
+# Selo "tabelas conferidas em" mostrado em toda calculadora — pedido
+# direto do conselho consultivo (risco nº1 apontado: usuário desconfiar
+# se uma tabela oficial mudar e o site não acompanhar). Atualizar este
+# valor toda vez que as tabelas (INSS/IRRF/IPVA/MEI/etc.) forem revisadas
+# — é a ÚNICA linha que precisa mudar, `templates/*.html` só referenciam
+# a variável.
+VERIFICADO_EM = "agosto de 2026"
+
 # Uma entrada por página final em dist/ — "template" é o arquivo em
 # templates/, "saida" é o nome do arquivo gerado em dist/, "active" liga
 # o item certo do nav (mesmo slug usado em CATEGORIAS_NAV).
@@ -106,6 +118,7 @@ def build():
         "nav_items": NAV_ITEMS,
         "categorias_nav": CATEGORIAS_NAV,
         "ano_atual": datetime.date.today().year,
+        "verificado_em": VERIFICADO_EM,
     }
 
     for pagina in PAGINAS:

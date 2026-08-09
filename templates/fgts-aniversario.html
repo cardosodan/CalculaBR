@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Calculadora FGTS: Saque-Aniversário vs Saque-Rescisão — CalculaBR{% endblock %}
+{% block meta_description %}Calcule quanto você recebe no saque-aniversário do FGTS e compare com o saque-rescisão tradicional em caso de demissão.{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Trabalhista</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">FGTS: Saque-Aniversário vs Saque-Rescisão</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    No saque-aniversário você recebe uma parte todo ano, mas abre mão de
+    sacar o saldo inteiro se for demitido (fica só com a multa de 40%).
+    Veja os dois números antes de decidir.
+  </p>
+
+  <p class="selo-verificado mt-4 inline-flex items-center gap-1.5 text-xs text-ink-faint bg-elevated border border-border rounded-full px-3 py-1.5">
+    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-accent"></i>
+    Tabelas conferidas em {{ verificado_em }}
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="saldo-fgts">Saldo atual do FGTS</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="saldo-fgts" type="text" inputmode="decimal" placeholder="8.000,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+        <p class="mt-1.5 text-xs text-ink-faint">Confira no app FGTS ou extrato da Caixa.</p>
+      </div>
+      <button id="btn-calcular" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Calcular
+      </button>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div id="resultado" class="hidden space-y-4">
+        <div class="spotlight bg-surface border border-accent/30 rounded-2xl p-6">
+          <p class="text-sm text-ink-muted">Valor do saque-aniversário deste ano</p>
+          <p id="r-saque-aniversario" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+          <p class="mt-1 text-xs text-ink-faint"><span id="r-aliquota"></span> do saldo + parcela adicional fixa</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-medium text-ink mb-3">Se você for demitido sem justa causa…</p>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="bg-surface border border-border rounded-2xl p-5">
+              <p class="font-display font-semibold text-ink text-sm">Saque-Rescisão (padrão)</p>
+              <p id="r-rescisao-total" class="font-numeros text-2xl font-semibold text-good mt-2">—</p>
+              <p class="text-xs text-ink-faint mt-1">Saldo inteiro + multa de 40%</p>
+            </div>
+            <div class="bg-surface border border-border rounded-2xl p-5">
+              <p class="font-display font-semibold text-ink text-sm">Saque-Aniversário</p>
+              <p id="r-aniversario-rescisao" class="font-numeros text-2xl font-semibold text-ink mt-2">—</p>
+              <p class="text-xs text-ink-faint mt-1">Só a multa de 40% — o saldo fica retido</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="placeholder-resultado" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[240px]">
+        Informe o saldo do FGTS e clique em calcular.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela vigente -->
+  <div class="mt-12">
+    <h2 class="font-display text-xl font-semibold text-ink mb-4">Tabela do saque-aniversário</h2>
+    <div class="bg-surface border border-border rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-border text-left text-ink-muted">
+              <th class="px-5 py-3 font-medium">Saldo</th>
+              <th class="px-5 py-3 font-medium">Alíquota</th>
+              <th class="px-5 py-3 font-medium">Parcela adicional</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border font-numeros text-ink">
+            <tr><td class="px-5 py-3">até R$ 500,00</td><td class="px-5 py-3">50%</td><td class="px-5 py-3">—</td></tr>
+            <tr><td class="px-5 py-3">R$ 500,01 até R$ 1.000,00</td><td class="px-5 py-3">40%</td><td class="px-5 py-3">R$ 50,00</td></tr>
+            <tr><td class="px-5 py-3">R$ 1.000,01 até R$ 5.000,00</td><td class="px-5 py-3">30%</td><td class="px-5 py-3">R$ 150,00</td></tr>
+            <tr><td class="px-5 py-3">R$ 5.000,01 até R$ 10.000,00</td><td class="px-5 py-3">20%</td><td class="px-5 py-3">R$ 650,00</td></tr>
+            <tr><td class="px-5 py-3">R$ 10.000,01 até R$ 15.000,00</td><td class="px-5 py-3">15%</td><td class="px-5 py-3">R$ 1.150,00</td></tr>
+            <tr><td class="px-5 py-3">R$ 15.000,01 até R$ 20.000,00</td><td class="px-5 py-3">10%</td><td class="px-5 py-3">R$ 1.900,00</td></tr>
+            <tr><td class="px-5 py-3">acima de R$ 20.000,00</td><td class="px-5 py-3">5%</td><td class="px-5 py-3">R$ 2.900,00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-8 text-xs text-ink-faint max-w-2xl">
+    A adesão ao saque-aniversário é uma escolha (feita pelo app FGTS) que
+    vale pra todas as suas contas — não dá pra escolher conta por conta. É
+    possível voltar pro saque-rescisão, mas com carência de 2 anos. Em
+    ambas as modalidades, a multa rescisória de 40% (ou 20% em acordo
+    mútuo) sempre é paga pelo empregador em caso de demissão.
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/fgts-aniversario.js"></script>
+{% endblock %}

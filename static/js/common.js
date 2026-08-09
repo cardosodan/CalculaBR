@@ -175,6 +175,7 @@ function revelarResultado(painelResultado, painelPlaceholder) {
   if (painelPlaceholder) painelPlaceholder.classList.add("hidden");
   const jaEstavaVisivel = !painelResultado.classList.contains("hidden");
   painelResultado.classList.remove("hidden"); // sempre síncrono — nunca depende do GSAP pra isso
+  adicionarBotaoExportar(painelResultado);
 
   if (typeof gsap === "undefined" || prefereMenosMovimentoCalc) return;
 
@@ -228,6 +229,23 @@ function animarEntradaEmLote(elementos, opcoes = {}) {
 // da DCodes — só em telas com mouse de verdade. O CSS correspondente (as
 // variáveis --spot-x/--spot-y) vive em input.css, classe utilitária
 // `.spotlight`.
+// Botão "Baixar em PDF" — chama window.print(), o navegador já oferece
+// "Salvar como PDF" no próprio diálogo (sem lib nenhuma). O CSS de
+// impressão (input.css, @media print) esconde nav/formulário/placeholder
+// e força tema claro, sobrando só o painel de resultado na folha. Idempotente
+// (não duplica se o painel já tiver o botão — acontece quando o usuário
+// clica "calcular" de novo).
+function adicionarBotaoExportar(painel) {
+  if (painel.querySelector(".botao-exportar-pdf")) return;
+  const botao = document.createElement("button");
+  botao.type = "button";
+  botao.className = "botao-exportar-pdf no-print mt-5 pt-4 border-t border-border w-full flex items-center justify-center gap-2 text-xs font-medium text-ink-faint hover:text-accent transition-colors";
+  botao.innerHTML = '<i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar este resultado em PDF';
+  botao.addEventListener("click", () => window.print());
+  painel.appendChild(botao);
+  if (typeof lucide !== "undefined") lucide.createIcons();
+}
+
 function ativarSpotlightCards(seletor) {
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   document.querySelectorAll(seletor).forEach((cartao) => {
