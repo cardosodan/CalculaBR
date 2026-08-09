@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Calculadora de IPVA 2026 — CalculaBR{% endblock %}
+{% block meta_description %}Calcule o IPVA do seu veículo — alíquotas do Amazonas já configuradas, ou informe a alíquota do seu estado.{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Tributário</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">Calculadora de IPVA</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    O IPVA é estadual — a alíquota varia por estado e tipo de veículo. O
+    Amazonas já vem configurado (as mais baixas do Brasil em 2026).
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="valor-veiculo">Valor do veículo (Tabela FIPE)</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="valor-veiculo" type="text" inputmode="decimal" placeholder="60.000,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="categoria">Estado / categoria</label>
+        <select id="categoria" class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+          <option value="1.5">Amazonas — até 1.0 / elétrico / híbrido (1,5%)</option>
+          <option value="2">Amazonas — acima de 1.0 (2%)</option>
+          <option value="custom">Outro estado (informar alíquota)</option>
+        </select>
+      </div>
+
+      <div id="campo-aliquota-custom" class="hidden">
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="aliquota-custom">Alíquota do seu estado</label>
+        <div class="relative">
+          <input id="aliquota-custom" type="text" inputmode="decimal" placeholder="4"
+                 class="w-full bg-elevated border border-border rounded-lg pl-3 pr-9 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">%</span>
+        </div>
+        <p class="mt-1.5 text-xs text-ink-faint">Costuma variar entre 1% e 4% dependendo do estado e tipo de veículo.</p>
+      </div>
+
+      <button id="btn-calcular" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Calcular
+      </button>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div id="resultado" class="spotlight hidden bg-surface border border-accent/30 rounded-2xl p-6">
+        <p class="text-sm text-ink-muted">Valor do IPVA (à vista)</p>
+        <p id="r-ipva" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+
+        <div class="grid sm:grid-cols-2 gap-4 mt-6">
+          <div class="bg-elevated rounded-xl p-4">
+            <p class="text-xs text-ink-muted">Com 10% de desconto (cota única)</p>
+            <p id="r-com-desconto" class="font-numeros text-xl font-semibold text-ink mt-1">—</p>
+          </div>
+          <div class="bg-elevated rounded-xl p-4">
+            <p class="text-xs text-ink-muted">Parcelado em 3x</p>
+            <p id="r-parcelado" class="font-numeros text-xl font-semibold text-ink mt-1">—</p>
+          </div>
+        </div>
+        <p id="r-isento-aviso" class="hidden mt-4 text-xs text-ink-faint bg-elevated rounded-lg px-3 py-2">
+          No Amazonas, valores de IPVA até R$ 420,00 são isentos automaticamente (IPVA Social).
+        </p>
+      </div>
+      <div id="placeholder-resultado" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[200px]">
+        Preencha o valor do veículo e clique em calcular.
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-8 text-xs text-ink-faint max-w-2xl">
+    Alíquotas do Amazonas (1,5%/2%) verificadas nesta revisão — leis
+    estaduais mudam ano a ano, confirme com a SEFAZ/Detran do seu estado
+    antes de pagar. Desconto/parcelamento seguem o padrão mais comum entre
+    estados, mas cada um define suas próprias regras e prazos.
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/ipva.js"></script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Calculadora de IRPF 2026 (Declaração Anual) — CalculaBR{% endblock %}
+{% block meta_description %}Simule a declaração anual do Imposto de Renda: desconto simplificado vs. completo (com dependentes, saúde, educação e previdência), já com a reforma 2026.{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Tributário</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">Calculadora de IRPF (Declaração Anual)</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    Compara desconto simplificado (20%) contra o completo (deduções reais)
+    e mostra qual é mais vantajoso — já com a reforma de 2026 (isenção até
+    R$ 5.000/mês, redução parcial até R$ 7.350).
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="rendimentos">Rendimentos tributáveis no ano</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="rendimentos" type="text" inputmode="decimal" placeholder="60.000,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+        <p class="mt-1.5 text-xs text-ink-faint">Soma dos salários do ano (sem 13º, que tem tributação separada).</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="dependentes">Dependentes</label>
+        <input id="dependentes" type="text" inputmode="numeric" placeholder="0"
+               class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="inss-pago">INSS pago no ano</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="inss-pago" type="text" inputmode="decimal" placeholder="opcional"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="despesas-saude">Despesas com saúde (dedutíveis)</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="despesas-saude" type="text" inputmode="decimal" placeholder="0,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="despesas-educacao">Despesas com educação</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="despesas-educacao" type="text" inputmode="decimal" placeholder="0,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+        <p class="mt-1.5 text-xs text-ink-faint">Limitado a R$ 3.561,50 por pessoa (titular + cada dependente) — aplicado automaticamente.</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="previdencia">Previdência privada (PGBL)</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="previdencia" type="text" inputmode="decimal" placeholder="0,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+        <p class="mt-1.5 text-xs text-ink-faint">Limitado a 12% dos rendimentos tributáveis — aplicado automaticamente.</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="ir-retido">IR já retido na fonte no ano (opcional)</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="ir-retido" type="text" inputmode="decimal" placeholder="do informe de rendimentos"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+      <button id="btn-calcular" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Calcular
+      </button>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div id="resultado" class="hidden space-y-4">
+        <div id="card-recomendado" class="spotlight bg-surface border border-accent/30 rounded-2xl p-6">
+          <p class="text-sm text-ink-muted">Modelo mais vantajoso: <span id="r-modelo-recomendado" class="text-accent font-medium"></span></p>
+          <p id="r-imposto-final" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+          <p id="r-saldo" class="mt-2 text-sm"></p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="bg-surface border border-border rounded-2xl p-5">
+            <p class="text-sm font-medium text-ink">Desconto simplificado</p>
+            <p class="text-xs text-ink-faint mt-0.5">20% da renda, até R$ 17.640/ano</p>
+            <p id="r-imposto-simples" class="font-numeros text-xl font-semibold text-ink mt-3">—</p>
+            <p class="text-xs text-ink-faint mt-1">Base tributável: <span id="r-base-simples" class="font-numeros"></span></p>
+          </div>
+          <div class="bg-surface border border-border rounded-2xl p-5">
+            <p class="text-sm font-medium text-ink">Deduções completas</p>
+            <p class="text-xs text-ink-faint mt-0.5">INSS + dependentes + saúde + educação + previdência</p>
+            <p id="r-imposto-completo" class="font-numeros text-xl font-semibold text-ink mt-3">—</p>
+            <p class="text-xs text-ink-faint mt-1">Base tributável: <span id="r-base-completo" class="font-numeros"></span></p>
+          </div>
+        </div>
+      </div>
+      <div id="placeholder-resultado" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[240px]">
+        Preencha os dados e clique em calcular.
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-8 text-xs text-ink-faint max-w-2xl">
+    Simulação educacional — a declaração real da Receita Federal tem outras
+    variáveis (bens, dívidas, rendimentos isentos declarados só
+    informativamente etc.) que não afetam o imposto devido mas fazem parte
+    da declaração completa. Reforma 2026 (Lei 15.270/2025): isenção total
+    até R$ 60.000/ano, redução parcial decrescente até R$ 88.200/ano.
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/irpf.js"></script>
+{% endblock %}

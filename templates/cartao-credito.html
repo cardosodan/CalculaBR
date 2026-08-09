@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Calculadora de Juros do Cartão de Crédito (Rotativo) — CalculaBR{% endblock %}
+{% block meta_description %}Veja quanto custa não pagar a fatura inteira do cartão — os juros do rotativo são os mais altos do mercado brasileiro.{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Crédito &amp; Financiamento</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">Calculadora do Rotativo do Cartão</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    Pagar só uma parte da fatura joga o resto pro rotativo — a modalidade
+    de crédito mais cara do Brasil, disparado.
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="valor-fatura">Valor total da fatura</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="valor-fatura" type="text" inputmode="decimal" placeholder="2.000,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="valor-pago">Quanto você vai pagar agora</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="valor-pago" type="text" inputmode="decimal" placeholder="500,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="taxa-rotativo">Taxa do rotativo ao mês</label>
+        <div class="relative">
+          <input id="taxa-rotativo" type="text" inputmode="decimal" value="36"
+                 class="w-full bg-elevated border border-border rounded-lg pl-3 pr-9 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+          <span class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">%</span>
+        </div>
+        <p class="mt-1.5 text-xs text-ink-faint">~36% a.m. é a média informada pelo Banco Central em 2026 — varia por cartão/banco.</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="meses-para-quitar">Se demorar quantos meses pra quitar o resto</label>
+        <input id="meses-para-quitar" type="text" inputmode="numeric" value="3"
+               class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+      <button id="btn-calcular" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Calcular
+      </button>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div id="resultado" class="spotlight hidden bg-surface border border-accent/30 rounded-2xl p-6">
+        <p class="text-sm text-ink-muted">Valor final se demorar pra quitar</p>
+        <p id="r-valor-final" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+
+        <div class="grid sm:grid-cols-2 gap-4 mt-6">
+          <div class="bg-elevated rounded-xl p-4">
+            <p class="text-xs text-ink-muted">Valor que fica no rotativo</p>
+            <p id="r-nao-pago" class="font-numeros text-xl font-semibold text-ink mt-1">—</p>
+          </div>
+          <div class="bg-elevated rounded-xl p-4">
+            <p class="text-xs text-ink-muted">Só de juros acumulados</p>
+            <p id="r-juros-total" class="font-numeros text-xl font-semibold text-bad mt-1">—</p>
+          </div>
+        </div>
+      </div>
+      <div id="placeholder-resultado" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[200px]">
+        Preencha os dados e clique em calcular.
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-8 text-xs text-ink-faint max-w-2xl">
+    Por lei, os juros do rotativo só podem incidir por até 1 fatura — depois
+    disso o banco é obrigado a oferecer parcelamento com juros menores.
+    Essa calculadora simula o pior cenário (permanecer só no rotativo) só
+    pra ilustrar o tamanho do problema — na prática, negocie o parcelamento.
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/cartao-credito.js"></script>
+{% endblock %}

@@ -1,9 +1,16 @@
 # CalculaBR
 
-Site estático (sem backend, sem banco de dados) com calculadoras
-trabalhistas, tributárias e de investimento pro Brasil — rescisão
-trabalhista, férias proporcionais, INSS, ITBI e um comparador de renda
-fixa (CDB/LCI-LCA/Tesouro Selic/Poupança) + simulador de juros compostos.
+Site estático (sem backend, sem banco de dados) com **16 calculadoras**
+pro Brasil, organizadas em 4 categorias:
+
+- **Trabalhista**: Rescisão, Férias Proporcionais, 13º Salário, Salário
+  Líquido, Horas Extras, INSS.
+- **Tributário**: IRPF (declaração anual), ITBI, IPVA, IPTU, MEI (DAS).
+- **Crédito & Financiamento**: Financiamento Imobiliário (SAC vs Price),
+  Financiamento de Veículo, Cartão de Crédito (rotativo), Empréstimo
+  Consignado.
+- **Investimentos**: comparador de renda fixa (CDB/LCI-LCA/Tesouro
+  Selic/Poupança) + simulador de juros compostos.
 
 Todo cálculo roda **no navegador do usuário** (JavaScript puro, sem
 framework) — nenhum dado é enviado pra lugar nenhum.
@@ -108,29 +115,60 @@ manual, por isso Netlify/Vercel é o caminho recomendado.
 
 ## Fontes dos dados usados (revisão de agosto/2026 — conferir se mudou)
 
+Tabelas compartilhadas (INSS, IRRF) ficam centralizadas em
+`static/js/common.js` — nunca duplicadas por calculadora, pra nunca
+desalinhar quando a tabela do ano mudar.
+
 - **INSS 2026**: tabela progressiva com dedução, salário mínimo
-  R$ 1.621,00, teto R$ 8.475,55 (alíquotas 7,5% / 9% / 12% / 14%).
-  Muda todo início de ano — atualizar `static/js/inss.js`
-  (`FAIXAS_INSS_2026`) e a tabela em `templates/inss.html` quando sair a
-  tabela nova.
-- **ITBI Manaus**: 2% sobre o valor venal/de transação (o maior). Lei
-  municipal pode mudar — a calculadora permite trocar pra "outra cidade"
-  com alíquota customizada.
+  R$ 1.621,00, teto R$ 8.475,55 (7,5% / 9% / 12% / 14%). Muda todo início
+  de ano — atualizar `FAIXAS_INSS_2026`/`TETO_INSS_2026` em `common.js`.
+- **IRRF 2026 (reforma da Lei 15.270/2025)**: isenção total até
+  R$ 5.000/mês (R$ 60.000/ano), redução parcial decrescente de
+  R$ 5.000,01 a R$ 7.350,00 (fórmula oficial: 978,62 − 0,133145 × renda),
+  tabela progressiva tradicional acima disso — verificado cruzando 2
+  fontes independentes (mensal e sua equivalente anual batendo ×12 exato)
+  antes de implementar. `TABELA_IRRF_2026` em `common.js`.
+- **ITBI Manaus**: 2% sobre o valor venal/de transação (o maior).
+- **IPVA Amazonas 2026**: 1,5% (até 1.0/elétrico/híbrido) ou 2% (acima de
+  1.0) — reduzidas pela metade em relação a 2025, isenção automática até
+  R$ 420,00 (IPVA Social).
+- **MEI 2026**: DAS R$ 82,05 (comércio/indústria) / R$ 86,05 (serviços) /
+  R$ 87,05 (ambos) — 5% do salário mínimo (INSS) + R$ 1/R$ 5 fixos
+  (ICMS/ISS). Limite de faturamento R$ 81.000/ano, inalterado desde 2019.
+- **Margem consignável 2026**: CLT 35% (Lei 10.820/2003, estável); INSS/
+  aposentados 40% (reduzida de 45% pela MP 1.355/2026, caindo 2 pontos
+  por ano até 30% em 2031) — teto de juros do consignado INSS 1,85% a.m.
+- **Rotativo do cartão**: ~36% ao mês (428-436% a.a., dado do Banco
+  Central em 2026) — deliberadamente alto de propósito, é a modalidade de
+  crédito mais cara do país.
 - **IR regressivo (renda fixa)**: 22,5% / 20% / 17,5% / 15% conforme
-  prazo — regra estável desde 2004 (Lei 11.033), baixo risco de mudar.
+  prazo — regra estável desde 2004 (Lei 11.033).
 - **CDI/Selic/TR**: valores de referência editáveis na própria
-  calculadora (CDI 14,15% a.a., Selic 14,25% a.a., TR 0,17% a.m.) — mudam
-  a cada reunião do Copom, por isso são só um "chute inicial" no formulário,
-  não uma constante fixa no código.
+  calculadora — mudam a cada reunião do Copom.
 - **Aviso prévio (30 + 3 dias por ano, até 90)**: Lei 12.506/2011, estável.
 - **FGTS**: 8% mensal, multa de 40% (sem justa causa) / 20% (acordo mútuo,
-  Art. 484-A CLT) — regras estáveis.
+  Art. 484-A CLT).
+- **SAC/Price**: fórmulas padrão de matemática financeira (não são "dado"
+  que muda, são matemática) — `calcularSAC`/`calcularPrice`/
+  `calcularValorMaximoPrice` em `common.js`, compartilhadas entre
+  Financiamento Imobiliário, Financiamento de Veículo e Consignado.
 
 ## Escopo consciente (o que NÃO está incluído)
 
-- IRRF sobre saldo de salário/13º na rescisão (mostrado bruto, com nota).
-- IOF regressivo em resgates de CDB/Tesouro antes de 30 dias.
+- IRRF sobre saldo de salário/13º proporcional **dentro da rescisão**
+  (mostrado bruto, com nota) — o 13º Salário *standalone* já calcula IRRF
+  corretamente, só a rescisão não.
+- Aposentadoria (INSS) — **deliberadamente fora desta rodada**: as regras
+  de transição (idade mínima progressiva, pontos, pedágio 50%/100%) são
+  complexas demais pra arriscar errar sem uma rodada de pesquisa dedicada
+  só pra isso.
+- Simples Nacional completo (só o MEI está implementado) — o Simples de
+  verdade tem 5 anexos com faixas próprias, escopo bem maior que um DAS.
+- IOF regressivo em resgates de CDB/Tesouro antes de 30 dias, e em
+  financiamentos/consignado.
 - Taxa de custódia da B3 no Tesouro Selic (0,20% a.a. acima de R$ 10 mil).
+- CET real de financiamentos (usa só a taxa de juros nominal — CET
+  inclui seguro, tarifas, IOF, que os bancos cobram por fora).
 - Cálculo de seguro-desemprego (regras e parcelas próprias, só mencionado
   como direito na rescisão sem justa causa).
 

@@ -16,6 +16,63 @@ function formatarPercentual(valor, casas = 1) {
   return valor.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas }) + "%";
 }
 
+/* ==========================================================================
+   TABELAS OFICIAIS COMPARTILHADAS (INSS e IRRF 2026) — usadas por várias
+   calculadoras (INSS, Salário Líquido, 13º, Horas Extras, IRPF). Ficam num
+   lugar só pra nunca desalinhar entre calculadoras diferentes quando a
+   tabela mudar de ano.
+   ========================================================================== */
+
+// INSS 2026 — progressivo com dedução (salário mínimo R$ 1.621,00, teto
+// R$ 8.475,55). Atualizar todo início de ano.
+const FAIXAS_INSS_2026 = [
+  { ate: 1621.00, aliquota: 0.075, deducao: 0 },
+  { ate: 2902.84, aliquota: 0.09, deducao: 24.32 },
+  { ate: 4354.27, aliquota: 0.12, deducao: 111.40 },
+  { ate: 8475.55, aliquota: 0.14, deducao: 198.49 },
+];
+const TETO_INSS_2026 = 8475.55;
+
+function calcularDescontoINSS(salarioBruto) {
+  const baseCalculo = Math.min(salarioBruto, TETO_INSS_2026);
+  const faixa = FAIXAS_INSS_2026.find((f) => baseCalculo <= f.ate) || FAIXAS_INSS_2026[FAIXAS_INSS_2026.length - 1];
+  const desconto = Math.max(0, baseCalculo * faixa.aliquota - faixa.deducao);
+  return { desconto, acimaDoTeto: salarioBruto > TETO_INSS_2026 };
+}
+
+// IRRF 2026 — reforma da Lei 15.270/2025: isenção total até R$5.000/mês,
+// redução parcial decrescente de R$5.000,01 a R$7.350,00 (fórmula oficial:
+// 978,62 − 0,133145 × renda), tabela progressiva tradicional acima disso.
+// Verificado cruzando 2 fontes independentes antes de usar (tabela mensal
+// e sua equivalente anual batendo exatamente ×12).
+const TABELA_IRRF_2026 = [
+  { ate: 2428.80, aliquota: 0, deducao: 0 },
+  { ate: 2826.65, aliquota: 0.075, deducao: 182.16 },
+  { ate: 3751.05, aliquota: 0.15, deducao: 394.16 },
+  { ate: 4664.68, aliquota: 0.225, deducao: 675.49 },
+  { ate: Infinity, aliquota: 0.275, deducao: 908.73 },
+];
+const DEDUCAO_DEPENDENTE_MENSAL_2026 = 189.59;
+const DEDUCAO_DEPENDENTE_ANUAL_2026 = 2275.08;
+const LIMITE_ISENCAO_TOTAL_2026 = 5000;
+const LIMITE_REDUCAO_PARCIAL_2026 = 7350;
+
+// baseTributavel = renda menos INSS (a base do IRRF já é líquida de INSS).
+// `dependentes` é opcional — cada um reduz a base pela dedução mensal.
+function calcularIRRFMensal(baseTributavel, dependentes = 0) {
+  const base = Math.max(0, baseTributavel - dependentes * DEDUCAO_DEPENDENTE_MENSAL_2026);
+  if (base <= LIMITE_ISENCAO_TOTAL_2026) return 0;
+
+  const faixa = TABELA_IRRF_2026.find((f) => base <= f.ate);
+  const irBase = Math.max(0, base * faixa.aliquota - faixa.deducao);
+
+  if (base <= LIMITE_REDUCAO_PARCIAL_2026) {
+    const redutor = Math.max(0, 978.62 - 0.133145 * base);
+    return Math.max(0, irBase - redutor);
+  }
+  return irBase;
+}
+
 // "1.234,56" ou "1234,56" ou "1234.56" -> 1234.56 (number). Vazio/inválido -> NaN.
 function parseNumeroBR(texto) {
   if (typeof texto !== "string") return NaN;
@@ -187,3 +244,50 @@ function ativarSpotlightCards(seletor) {
 document.addEventListener("DOMContentLoaded", () => {
   ativarSpotlightCards(".spotlight");
 });
+
+/* ==========================================================================
+   AMORTIZAÇÃO (SAC/Price) — fórmulas padrão de matemática financeira,
+   compartilhadas entre Financiamento Imobiliário, Financiamento de
+   Veículo e Empréstimo Consignado (esse último usa a Price "invertida"
+   pra achar o valor máximo a partir da parcela/margem disponível).
+   ========================================================================== */
+
+// SAC: amortização constante, juros (e por isso a parcela) decrescem mês
+// a mês porque incidem sobre um saldo devedor cada vez menor.
+function calcularSAC(valor, taxaMensal, prazoMeses) {
+  const amortizacao = valor / prazoMeses;
+  let saldoDevedor = valor;
+  let totalPago = 0;
+  let primeiraParcela = null;
+  let ultimaParcela = null;
+  for (let i = 0; i < prazoMeses; i++) {
+    const juros = saldoDevedor * taxaMensal;
+    const parcela = amortizacao + juros;
+    if (i === 0) primeiraParcela = parcela;
+    if (i === prazoMeses - 1) ultimaParcela = parcela;
+    totalPago += parcela;
+    saldoDevedor -= amortizacao;
+  }
+  return { primeiraParcela, ultimaParcela, totalPago, totalJuros: totalPago - valor };
+}
+
+// Price (Sistema Francês): parcela FIXA do início ao fim.
+function calcularParcelaPrice(valor, taxaMensal, prazoMeses) {
+  if (taxaMensal <= 0) return valor / prazoMeses;
+  const fator = Math.pow(1 + taxaMensal, prazoMeses);
+  return valor * (taxaMensal * fator) / (fator - 1);
+}
+
+function calcularPrice(valor, taxaMensal, prazoMeses) {
+  const parcela = calcularParcelaPrice(valor, taxaMensal, prazoMeses);
+  const totalPago = parcela * prazoMeses;
+  return { parcela, totalPago, totalJuros: totalPago - valor };
+}
+
+// Inverso da Price: dada a PARCELA máxima que cabe no bolso (ex: margem
+// consignável), acha o valor máximo que dá pra tomar emprestado.
+function calcularValorMaximoPrice(parcela, taxaMensal, prazoMeses) {
+  if (taxaMensal <= 0) return parcela * prazoMeses;
+  const fator = Math.pow(1 + taxaMensal, prazoMeses);
+  return parcela * (fator - 1) / (taxaMensal * fator);
+}

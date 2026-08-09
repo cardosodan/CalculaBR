@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Calculadora de Salário Líquido 2026 — CalculaBR{% endblock %}
+{% block meta_description %}Do salário bruto ao líquido de verdade: desconto de INSS, IRRF (já com a reforma 2026), vale-transporte e outros descontos.{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Trabalhista</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">Calculadora de Salário Líquido</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    O quanto realmente cai na sua conta — INSS, IRRF (com a nova faixa de
+    isenção até R$ 5.000), vale-transporte e outros descontos.
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="salario">Salário bruto mensal</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="salario" type="text" inputmode="decimal" placeholder="3.000,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="dependentes">Dependentes (IRRF)</label>
+        <input id="dependentes" type="text" inputmode="numeric" placeholder="0"
+               class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+      <label class="flex items-start gap-2.5 text-sm text-ink-muted cursor-pointer">
+        <input id="usa-vt" type="checkbox" class="mt-0.5 accent-accent w-4 h-4 rounded">
+        Desconta vale-transporte (6% do salário, teto legal)
+      </label>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="outros-descontos">Outros descontos mensais (opcional)</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="outros-descontos" type="text" inputmode="decimal" placeholder="plano de saúde, consignado..."
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+      <button id="btn-calcular" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Calcular
+      </button>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div id="resultado" class="spotlight hidden bg-surface border border-accent/30 rounded-2xl p-6">
+        <p class="text-sm text-ink-muted">Salário líquido</p>
+        <p id="r-liquido" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+
+        <div class="mt-6 border-t border-border pt-5 space-y-3 text-sm">
+          <div class="flex justify-between"><span class="text-ink-muted">Salário bruto</span><span id="r-bruto" class="font-numeros font-medium text-ink">—</span></div>
+          <div class="flex justify-between"><span class="text-ink-muted">(−) INSS</span><span id="r-inss" class="font-numeros font-medium text-ink">—</span></div>
+          <div class="flex justify-between"><span class="text-ink-muted">(−) IRRF</span><span id="r-irrf" class="font-numeros font-medium text-ink">—</span></div>
+          <div id="linha-vt" class="hidden flex justify-between"><span class="text-ink-muted">(−) Vale-transporte</span><span id="r-vt" class="font-numeros font-medium text-ink">—</span></div>
+          <div id="linha-outros" class="hidden flex justify-between"><span class="text-ink-muted">(−) Outros descontos</span><span id="r-outros" class="font-numeros font-medium text-ink">—</span></div>
+        </div>
+        <p class="mt-4 text-xs text-ink-faint">Alíquota efetiva de desconto: <span id="r-aliquota-efetiva" class="font-numeros"></span></p>
+      </div>
+      <div id="placeholder-resultado" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[240px]">
+        Preencha os dados e clique em calcular.
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-8 text-xs text-ink-faint max-w-2xl">
+    Não inclui vale-refeição/alimentação (não é desconto legal padronizado,
+    varia por empresa/convenção) nem contribuição sindical. Use "outros
+    descontos" pra esses casos.
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/salario-liquido.js"></script>
+{% endblock %}

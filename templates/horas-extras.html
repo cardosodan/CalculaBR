@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Calculadora de Horas Extras e Adicional Noturno — CalculaBR{% endblock %}
+{% block meta_description %}Calcule horas extras a 50% e 100%, adicional noturno (20%) e o reflexo no DSR (Descanso Semanal Remunerado).{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+  <p class="text-sm font-medium text-accent uppercase tracking-wide">Trabalhista</p>
+  <h1 class="font-display text-3xl sm:text-4xl font-semibold text-ink mt-1">Calculadora de Horas Extras</h1>
+  <p class="mt-3 text-ink-muted max-w-2xl">
+    Horas extras a 50%/100%, adicional noturno (20%) e o reflexo no DSR —
+    a partir do seu salário e da jornada mensal contratual.
+  </p>
+
+  <div class="grid lg:grid-cols-5 gap-6 mt-8">
+    <div class="lg:col-span-2 bg-surface border border-border rounded-2xl p-6 h-fit space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="salario">Salário bruto mensal</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint text-sm">R$</span>
+          <input id="salario" type="text" inputmode="decimal" placeholder="3.000,00"
+                 class="w-full bg-elevated border border-border rounded-lg pl-9 pr-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="horas-mensais">Jornada mensal contratual (horas)</label>
+        <input id="horas-mensais" type="text" inputmode="decimal" value="220"
+               class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink focus:outline-none focus:ring-2 focus:ring-accent/50">
+        <p class="mt-1.5 text-xs text-ink-faint">220h é o padrão pra jornada de 44h semanais (a mais comum no Brasil).</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="horas-50">Horas extras a 50%</label>
+        <input id="horas-50" type="text" inputmode="decimal" placeholder="0" class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="horas-100">Horas extras a 100% (domingos/feriados)</label>
+        <input id="horas-100" type="text" inputmode="decimal" placeholder="0" class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-ink-muted mb-1.5" for="horas-noturnas">Horas em adicional noturno (22h–5h)</label>
+        <input id="horas-noturnas" type="text" inputmode="decimal" placeholder="0" class="w-full bg-elevated border border-border rounded-lg px-3 py-2.5 text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent/50">
+      </div>
+      <label class="flex items-start gap-2.5 text-sm text-ink-muted cursor-pointer">
+        <input id="usa-dsr" type="checkbox" checked class="mt-0.5 accent-accent w-4 h-4 rounded">
+        Incluir reflexo no DSR (~18% de estimativa)
+      </label>
+      <button id="btn-calcular" class="w-full bg-accent hover:bg-accent-hover text-accent-ink font-display font-semibold px-5 py-3 rounded-xl transition-colors">
+        Calcular
+      </button>
+    </div>
+
+    <div class="lg:col-span-3">
+      <div id="resultado" class="spotlight hidden bg-surface border border-accent/30 rounded-2xl p-6">
+        <p class="text-sm text-ink-muted">Total a receber (extras + noturno + DSR)</p>
+        <p id="r-total" class="font-numeros text-4xl font-semibold text-accent mt-1">—</p>
+
+        <div class="mt-6 border-t border-border pt-5 space-y-3 text-sm">
+          <div class="flex justify-between"><span class="text-ink-muted">Valor da hora normal</span><span id="r-valor-hora" class="font-numeros font-medium text-ink">—</span></div>
+          <div class="flex justify-between"><span class="text-ink-muted">Horas extras 50%</span><span id="r-he50" class="font-numeros font-medium text-ink">—</span></div>
+          <div class="flex justify-between"><span class="text-ink-muted">Horas extras 100%</span><span id="r-he100" class="font-numeros font-medium text-ink">—</span></div>
+          <div class="flex justify-between"><span class="text-ink-muted">Adicional noturno (20%)</span><span id="r-noturno" class="font-numeros font-medium text-ink">—</span></div>
+          <div id="linha-dsr" class="flex justify-between pt-2 border-t border-border"><span class="text-ink-muted">Reflexo no DSR</span><span id="r-dsr" class="font-numeros font-medium text-ink">—</span></div>
+        </div>
+      </div>
+      <div id="placeholder-resultado" class="bg-surface border border-border border-dashed rounded-2xl p-6 flex items-center justify-center text-ink-faint text-sm h-full min-h-[240px]">
+        Preencha os dados e clique em calcular.
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-8 text-xs text-ink-faint max-w-2xl">
+    O reflexo real no DSR depende do número exato de domingos/feriados do
+    mês contra os dias úteis trabalhados — 18% é uma média de mercado
+    comumente usada como estimativa, não um percentual fixo em lei.
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/common.js"></script>
+<script src="/static/js/horas-extras.js"></script>
+{% endblock %}
